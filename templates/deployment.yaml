@@ -40,9 +40,6 @@ spec:
         - name: {{ .Values.app.name }}-volume
           persistentVolumeClaim:
             claimName: {{ .Values.app.name }}-claim
-        - name: {{ .Values.app.name }}-config
-          configMap:
-            name: {{ $releaseName }}-configmap
       containers:
         - name: {{ .Release.Name | quote }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -51,9 +48,6 @@ spec:
           volumeMounts:
           - name: {{ .Values.app.name }}-volume
             mountPath: /home/node/.n8n
-          - name: {{ .Values.app.name }}-config
-            mountPath: /data/workflows.json
-            subPath: workflows.json
           env:
           {{- range  $key, $value := .Values.environments}}
           - name: {{ $key }}
@@ -72,6 +66,7 @@ spec:
           {{- end }}
           ports:
           - containerPort: {{ .Values.service.targetPort | default 8080 }}
+          {{- if .Values.deployment.startupProbe.enabled }}
           startupProbe:
             {{- if .Values.deployment.startupProbe.execProbeCommand }}
             exec:
@@ -93,6 +88,7 @@ spec:
               port: {{ .Values.deployment.startupProbe.port | default 8080 }}
             failureThreshold: {{ .Values.deployment.startupProbe.failureThreshold | default 10 }}
             periodSeconds: {{ .Values.deployment.startupProbe.periodSeconds | default 5 }}
+            {{- end }}
           {{- end}}
           livenessProbe:
             {{- if .Values.deployment.livenessProbe.execProbeCommand}}
@@ -110,10 +106,10 @@ spec:
               port: {{ .Values.deployment.livenessProbe.port | default 8080 }}
             {{- end}}
             initialDelaySeconds: {{ .Values.deployment.livenessProbe.initialDelaySeconds | default 5 }}
-            periodSeconds: {{ .Values.deployment.livenessProbe.periodSeconds | default 1 }}
-            timeoutSeconds: {{ .Values.deployment.livenessProbe.timeoutSeconds | default 1 }}
+            periodSeconds: {{ .Values.deployment.livenessProbe.periodSeconds | default 5 }}
+            timeoutSeconds: {{ .Values.deployment.livenessProbe.timeoutSeconds | default 5 }}
             successThreshold: {{ .Values.deployment.livenessProbe.successThreshold | default 1 }}
-            failureThreshold: {{ .Values.deployment.livenessProbe.failureThreshold | default 1 }}
+            failureThreshold: {{ .Values.deployment.livenessProbe.failureThreshold | default 5 }}
           readinessProbe:
             {{- if .Values.deployment.livenessProbe.execProbeCommand}}
             exec:

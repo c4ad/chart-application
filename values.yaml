@@ -67,14 +67,6 @@ autoscaling:
   maxReplicas: 2
   targetAverageUtilization: 80
 
-volumes:
-  accessModes: ReadWriteOnce
-  storageSize: 5Gi
-  provisioner: ebs.csi.aws.com
-  bindingMode: WaitForFirstConsumer
-  allowVolumeExpansion: true
-  type: gp2
-
 nodeSelector: {}
 
 tolerations: []
