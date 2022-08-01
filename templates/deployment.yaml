@@ -1,0 +1,151 @@
+{{- $releaseName := .Release.Name}}
+{{- $appName := .Release.Name}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app.name | quote }}
+  labels: &labels
+    app: {{ .Values.app.name | quote }}
+    app.kubernetes.io/component: {{ $appName }}
+spec:
+  {{- with default .Values.deployment (index .Values.deployment .Release.Namespace) }}
+  replicas: {{ .replicaCount | default 1 }}
+  {{- end }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 0 }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ .Values.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.strategy.rollingUpdate.maxUnavailable }}
+  selector:
+    matchLabels: *labels
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels: *labels
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ .Values.app.name }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if or .Values.secrets .Values.volumes }}
+      volumes:
+        - name: {{ .Values.app.name }}-volume
+          persistentVolumeClaim:
+            claimName: {{ .Values.app.name }}-claim
+        - name: {{ .Values.app.name }}-config
+          configMap:
+            name: {{ $releaseName }}-configmap
+      containers:
+        - name: {{ .Release.Name | quote }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- if or .Values.environments .Values.secrets }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - name: {{ .Values.app.name }}-volume
+            mountPath: /home/node/.n8n
+          - name: {{ .Values.app.name }}-config
+            mountPath: /data/workflows.json
+            subPath: workflows.json
+          env:
+          {{- range  $key, $value := .Values.environments}}
+          - name: {{ $key }}
+            valueFrom:
+              configMapKeyRef:
+                name: {{ $releaseName }}-configmap
+                key: {{ $key }}
+          {{- end }}
+          {{- range $key, $value := .Values.secrets }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $releaseName }}-secret
+                key: {{ $key }}
+          {{- end }}
+          {{- end }}
+          ports:
+          - containerPort: {{ .Values.service.targetPort | default 8080 }}
+          startupProbe:
+            {{- if .Values.deployment.startupProbe.execProbeCommand }}
+            exec:
+              command:
+                {{- range $index, $value := .Values.deployment.startupProbe.execProbeCommand }}
+                - {{ $value }}
+                  {{- end }}
+            {{ else if .Values.deployment.startupProbe.tcpSocket }}
+            tcpSocket:
+              port: {{ .Values.deployment.startupProbe.tcpSocket }}
+            {{ else }}
+            httpGet:
+              {{- if .Values.deployment.startupProbe.httpHeaders }}
+              httpHeaders:
+                - name: {{ .Values.deployment.startupProbe.httpHeaders.name | quote }}
+                  value: {{ .Values.deployment.startupProbe.httpHeaders.value | quote }}
+              {{- end }}
+              path: {{ .Values.deployment.startupProbe.path }}
+              port: {{ .Values.deployment.startupProbe.port | default 8080 }}
+            failureThreshold: {{ .Values.deployment.startupProbe.failureThreshold | default 10 }}
+            periodSeconds: {{ .Values.deployment.startupProbe.periodSeconds | default 5 }}
+          {{- end}}
+          livenessProbe:
+            {{- if .Values.deployment.livenessProbe.execProbeCommand}}
+            exec:
+              command:
+                {{- range $index, $value := .Values.deployment.livenessProbe.execProbeCommand }}
+                - {{ $value }}
+                  {{- end }}
+            {{ else if .Values.deployment.livenessProbe.tcpSocket }}
+            tcpSocket:
+              port: {{ .Values.deployment.livenessProbe.tcpSocket }}
+            {{ else }}
+            httpGet:
+              path: {{ .Values.deployment.livenessProbe.path }}
+              port: {{ .Values.deployment.livenessProbe.port | default 8080 }}
+            {{- end}}
+            initialDelaySeconds: {{ .Values.deployment.livenessProbe.initialDelaySeconds | default 5 }}
+            periodSeconds: {{ .Values.deployment.livenessProbe.periodSeconds | default 1 }}
+            timeoutSeconds: {{ .Values.deployment.livenessProbe.timeoutSeconds | default 1 }}
+            successThreshold: {{ .Values.deployment.livenessProbe.successThreshold | default 1 }}
+            failureThreshold: {{ .Values.deployment.livenessProbe.failureThreshold | default 1 }}
+          readinessProbe:
+            {{- if .Values.deployment.livenessProbe.execProbeCommand}}
+            exec:
+              command:
+                {{- range $index, $value := .Values.deployment.livenessProbe.execProbeCommand }}
+                - {{ $value }}
+                  {{- end }}
+            {{ else if .Values.deployment.readinessProbe.tcpSocket }}
+            tcpSocket:
+              port: {{ .Values.deployment.readinessProbe.tcpSocket }}
+            {{ else }}
+            httpGet:
+              path: {{ .Values.deployment.readinessProbe.path }}
+              port: {{ .Values.deployment.readinessProbe.port | default 8080 }}
+            {{- end}}
+            initialDelaySeconds: {{ .Values.deployment.readinessProbe.initialDelaySeconds | default 5 }}
+            periodSeconds: {{ .Values.deployment.readinessProbe.periodSeconds | default 1 }}
+            timeoutSeconds: {{ .Values.deployment.readinessProbe.timeoutSeconds | default 1 }}
+            successThreshold: {{ .Values.deployment.readinessProbe.successThreshold | default 1 }}
+            failureThreshold: {{ .Values.deployment.readinessProbe.failureThreshold | default 1 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- end }}

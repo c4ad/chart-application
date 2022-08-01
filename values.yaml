@@ -1,0 +1,84 @@
+# Default values for api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+app:
+  name: n8n-service
+  kind: deployment
+
+deployment:
+  startupProbe:
+      path: /health
+      port: 5678
+  livenessProbe:
+      path: /health
+      port: 5678
+  readinessProbe:
+      path: /health
+      port: 5678
+  replicaCount: 1
+
+image:
+  repository: {} # aws ecr registry
+  pullPolicy: IfNotPresent
+  tag: "4441527"
+
+nameOverride: ""
+fullnameOverride: ""
+
+strategy:
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
+
+environments:
+  N8N_USER_FOLDER: /home/node
+  N8N_LOG_LEVEL: verbose
+
+serviceAccount:
+  create: false
+  name: n8n-service
+  annotations:
+    eks.amazonaws.com/role-arn: {}
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 2
+  targetAverageUtilization: 80
+
+volumes:
+  accessModes: ReadWriteOnce
+  storageSize: 5Gi
+  provisioner: ebs.csi.aws.com
+  bindingMode: WaitForFirstConsumer
+  allowVolumeExpansion: true
+  type: gp2
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+variables: {}
