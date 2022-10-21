@@ -1,20 +1,18 @@
-# Default values for api.
+# Default values for api-service.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 app:
-  name: n8n-service
-  kind: deployment
+  name: api-service
 
 deployment:
   startupProbe:
-      path: /health
-      port: 5678
+      tcpSocket: 8080
   livenessProbe:
-      path: /health
-      port: 5678
+      tcpSocket: 8080
+      initialDelaySeconds: 40
   readinessProbe:
-      path: /health
-      port: 5678
+      initialDelaySeconds: 40
+      tcpSocket: 8080
   replicaCount: 1
 
 image:
@@ -30,13 +28,11 @@ strategy:
     maxSurge: 1
     maxUnavailable: 0
 
-environments:
-  N8N_USER_FOLDER: /home/node
-  N8N_LOG_LEVEL: verbose
+environments: {}
 
 serviceAccount:
-  create: false
-  name: n8n-service
+  create: true
+  name: api-service
   annotations:
     eks.amazonaws.com/role-arn: {}
 
