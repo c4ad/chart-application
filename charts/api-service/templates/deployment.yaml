@@ -72,7 +72,7 @@ spec:
                 fieldPath: metadata.labels['tags.datadoghq.com/version']
           - name: DD_AGENT_HOST
             value: datadog-agent.observability.svc.cluster.local
-          {{- range  $key, $value := .Values.environments}}
+          {{- range  $key, $value := .Values.environments }}
           - name: {{ $key }}
             valueFrom:
               configMapKeyRef:
