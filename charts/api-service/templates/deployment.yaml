@@ -25,6 +25,7 @@ spec:
     metadata:
       {{- with .Values.podAnnotations }}
       annotations:
+        ad.datadoghq.com/{{ .Values.app.name }}.logs: '[{"source": "{{ $.Release.Namespace }}", "service": "{{ .Values.app.name }}"}]'
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
