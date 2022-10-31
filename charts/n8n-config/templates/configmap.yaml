@@ -1,0 +1,25 @@
+{{- if .Values.environments }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-configmap
+  namespace:  {{ .Release.Namespace | default "default"}}
+data:
+  {{- range  $key, $value := .Values.environments}}
+  {{$key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
+---
+{{- if .Values.workflows }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-wf
+  namespace:  {{ .Release.Namespace | default "default"}}
+data:
+  {{- range  $key, $value := .Values.workflows }}
+  {{$key }}: {{ $value | quote }}
+  {{- end }}
+  {{- end }}
