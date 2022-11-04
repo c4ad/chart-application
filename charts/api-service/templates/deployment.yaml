@@ -24,6 +24,7 @@ spec:
   template:
     metadata:
       annotations:
+        sidecar.jaegertracing.io/inject: "true"
         ad.datadoghq.com/{{ .Values.app.name }}.logs: '[{"source": "{{ $.Release.Namespace }}", "service": "{{ .Values.app.name }}"}]'
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
