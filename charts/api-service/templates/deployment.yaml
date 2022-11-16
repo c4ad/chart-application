@@ -42,40 +42,41 @@ spec:
       serviceAccountName: {{ .Values.app.name }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: copy-launcher
+          image: keyval/launcher:v0.1
+          command:
+            - cp
+            - -a
+            - /kv-launcher/.
+            - /odigos-launcher/
+          volumeMounts:
+            - name: launcherdir
+              mountPath: /odigos-launcher
       volumes:
         - name: {{ $releaseName }}-cloudfront
           secret:
             secretName: {{ $releaseName }}-cloudfront
-        - hostPath:
-            path: /var/run/datadog/
-          name: apmsocketpath
+        - name: launcherdir
+          emptyDir: {}
+        - name: kernel-debug
+          hostPath:
+            path: /sys/kernel/debug
       containers:
         - name: {{ .Release.Name | quote }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command:
+            - "/odigos-launcher/launch"
+            - "/bin/apisrv"
+            - "api"
           {{- if or .Values.environments .Values.secrets .Values.signedCookies }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
           - mountPath: /var/run/secrets/
             name: {{ $releaseName }}-cloudfront
-          - name: apmsocketpath
-            mountPath: /var/run/datadog
+          - mountPath: /odigos-launcher
+            name: launcherdir
           env:
-          - name: DD_ENV
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.labels['tags.datadoghq.com/env']
-          - name: DD_SERVICE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.labels['tags.datadoghq.com/service']
-          - name: DD_VERSION
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.labels['tags.datadoghq.com/version']
-          - name: DD_AGENT_HOST
-            value: datadog-agent.observability.svc.cluster.local
-          - name: "DD_LOGS_INJECTION"
-            value: "true"
           {{- range  $key, $value := .Values.environments }}
           - name: {{ $key }}
             valueFrom:
@@ -98,6 +99,24 @@ spec:
                 key: {{ $key }}
           {{- end }}
           {{- end }}
+        - name: emojivoto-emoji-instrumentation
+          image: keyval/otel-go-agent:v0.6.0
+          env:
+            - name: OTEL_TARGET_EXE
+              value: /bin/apisrv
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://otel-collector-service.observability.svc.cluster.local:14278/api/traces"
+            - name: OTEL_SERVICE_NAME
+              value: "api-server"
+          securityContext:
+            runAsUser: 0
+            capabilities:
+              add:
+                - SYS_PTRACE
+            privileged: true
+          volumeMounts:
+            - mountPath: /sys/kernel/debug
+              name: kernel-debug
           ports:
           - containerPort: {{ .Values.service.targetPort | default 8080 }}
           startupProbe:
