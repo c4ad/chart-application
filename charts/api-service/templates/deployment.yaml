@@ -54,7 +54,7 @@ spec:
         - name: kernel-debug
           hostPath:
             path: /sys/kernel/debug
-        - name: apisrv
+        - name: api-server
           hostPath:
             path: /bin/apisrv
       containers:
@@ -94,7 +94,7 @@ spec:
                 key: {{ $key }}
           {{- end }}
           {{- end }}
-        - name: emojivoto-emoji-instrumentation
+        - name: apisrv-otel
           image: keyval/otel-go-agent:v0.6.0
           env:
             - name: OTEL_TARGET_EXE
@@ -112,7 +112,7 @@ spec:
           volumeMounts:
             - mountPath: /sys/kernel/debug
               name: kernel-debug
-            - name: apisrv
+            - name: api-server
               mountPath: /bin/apisrv
           ports:
           - containerPort: {{ .Values.service.targetPort | default 8080 }}
