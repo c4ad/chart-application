@@ -51,9 +51,6 @@ spec:
             secretName: {{ $releaseName }}-cloudfront
         - name: launcherdir
           emptyDir: {}
-        - name: apisrv
-          hostPath:
-            path: /bin/apisrv
         - name: kernel-debug
           hostPath:
             path: /sys/kernel/debug
@@ -62,7 +59,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           command:
             - "/odigos-launcher/launch"
-            - "/bin/apisrv api"
+            - "/bin/apisrv"
+            - "api"
           {{- if or .Values.environments .Values.secrets .Values.signedCookies }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
@@ -113,6 +111,9 @@ spec:
           volumeMounts:
             - mountPath: /sys/kernel/debug
               name: kernel-debug
+            - name: apisrv
+              hostPath:
+                path: /bin/apisrv
           ports:
           - containerPort: {{ .Values.service.targetPort | default 8080 }}
           startupProbe:
