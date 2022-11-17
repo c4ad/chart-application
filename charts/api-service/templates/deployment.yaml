@@ -54,6 +54,9 @@ spec:
         - name: kernel-debug
           hostPath:
             path: /sys/kernel/debug
+        - name: apisrv
+          hostPath:
+            path: /bin/apisrv
       containers:
         - name: {{ .Release.Name | quote }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -68,8 +71,6 @@ spec:
             name: {{ $releaseName }}-cloudfront
           - mountPath: /odigos-launcher
             name: launcherdir
-          - name: apisrv
-            mountPath: /bin/apisrv
           env:
           {{- range  $key, $value := .Values.environments }}
           - name: {{ $key }}
@@ -112,8 +113,7 @@ spec:
             - mountPath: /sys/kernel/debug
               name: kernel-debug
             - name: apisrv
-              hostPath:
-                path: /bin/apisrv
+              mountPath: /bin/apisrv
           ports:
           - containerPort: {{ .Values.service.targetPort | default 8080 }}
           startupProbe:
