@@ -5,9 +5,6 @@ metadata:
   name: {{ .Values.app.name | quote }}
   labels:
     app: {{ .Values.app.name | quote }}
-    tags.datadoghq.com/env: {{ .Release.Namespace | quote }}
-    tags.datadoghq.com/service: {{ .Values.app.name | quote }}
-    tags.datadoghq.com/version: {{ .Values.image.tag | quote}}
 spec:
   {{- with default .Values.deployment (index .Values.deployment .Release.Namespace) }}
   replicas: {{ .replicaCount | default 1 }}
@@ -24,16 +21,11 @@ spec:
   template:
     metadata:
       annotations:
-        sidecar.jaegertracing.io/inject: "true"
-        ad.datadoghq.com/{{ .Values.app.name }}.logs: '[{"source": "{{ $.Release.Namespace }}", "service": "{{ .Values.app.name }}"}]'
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
         app: {{ .Values.app.name | quote }}
-        tags.datadoghq.com/env: {{ .Release.Namespace | quote }}
-        tags.datadoghq.com/service: {{ .Values.app.name | quote }}
-        tags.datadoghq.com/version: {{ .Values.image.tag | quote}}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -59,6 +51,9 @@ spec:
             secretName: {{ $releaseName }}-cloudfront
         - name: launcherdir
           emptyDir: {}
+        - name: apisrv
+          hostPath:
+            path: /bin/apisrv
         - name: kernel-debug
           hostPath:
             path: /sys/kernel/debug
@@ -67,8 +62,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           command:
             - "/odigos-launcher/launch"
-            - "/bin/apisrv"
-            - "api"
+            - "/bin/apisrv api"
           {{- if or .Values.environments .Values.secrets .Values.signedCookies }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
@@ -76,6 +70,8 @@ spec:
             name: {{ $releaseName }}-cloudfront
           - mountPath: /odigos-launcher
             name: launcherdir
+          - name: apisrv
+            mountPath: /bin/apisrv
           env:
           {{- range  $key, $value := .Values.environments }}
           - name: {{ $key }}
@@ -105,7 +101,7 @@ spec:
             - name: OTEL_TARGET_EXE
               value: /bin/apisrv
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://otel-collector-service.observability.svc.cluster.local:14278/api/traces"
+              value: "otel-collector-opentelemetry-collector.observability.svc.cluster.local:14250"
             - name: OTEL_SERVICE_NAME
               value: "api-server"
           securityContext:
