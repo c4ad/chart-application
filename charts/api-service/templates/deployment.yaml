@@ -34,7 +34,7 @@ spec:
       serviceAccountName: {{ .Values.app.name }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-      shareProcessNamespace: "true"
+      shareProcessNamespace: true
       terminationGracePeriodSeconds: 1
       initContainers:
         - name: copy-launcher
