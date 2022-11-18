@@ -54,7 +54,7 @@ spec:
         - name: kernel-debug
           hostPath:
             path: /sys/kernel/debug
-        - name: api-server
+        - name: apisrv
           hostPath:
             path: /bin/apisrv
       containers:
@@ -98,7 +98,7 @@ spec:
           image: keyval/otel-go-agent:v0.6.0
           env:
             - name: OTEL_TARGET_EXE
-              value: /bin/apisrv
+              value: /bin/
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "otel-collector-opentelemetry-collector.observability.svc.cluster.local:14250"
             - name: OTEL_SERVICE_NAME
@@ -112,8 +112,8 @@ spec:
           volumeMounts:
             - mountPath: /sys/kernel/debug
               name: kernel-debug
-            - name: api-server
-              mountPath: /bin/apisrv
+            - mountPath: /usr/local/bin/apisrv
+              name: apisrv
           ports:
           - containerPort: {{ .Values.service.targetPort | default 8080 }}
           startupProbe:
