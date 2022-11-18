@@ -54,9 +54,6 @@ spec:
         - name: kernel-debug
           hostPath:
             path: /sys/kernel/debug
-        - name: apisrv
-          hostPath:
-            path: /bin/apisrv
       containers:
         - name: {{ .Release.Name | quote }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -102,7 +99,7 @@ spec:
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "otel-collector-opentelemetry-collector.observability.svc.cluster.local:14250"
             - name: OTEL_SERVICE_NAME
-              value: "api-server"
+              value: "api"
           securityContext:
             runAsUser: 0
             capabilities:
@@ -112,8 +109,6 @@ spec:
           volumeMounts:
             - mountPath: /sys/kernel/debug
               name: kernel-debug
-            - mountPath: /usr/local/bin/apisrv
-              name: apisrv
           ports:
           - containerPort: {{ .Values.service.targetPort | default 8080 }}
           startupProbe:
