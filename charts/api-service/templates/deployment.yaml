@@ -53,8 +53,10 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.hostIP
+          - name: HOST_PORT
+            value: "4317"
           - name: OTEL_EXPORTER_OTLP_ENDPOINT
-            value: "$(HOST_IP):4317"
+            value: "$(HOST_IP):$(HOST_PORT)
           {{- range  $key, $value := .Values.environments }}
           - name: {{ $key }}
             valueFrom:
