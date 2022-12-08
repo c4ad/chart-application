@@ -36,41 +36,23 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       shareProcessNamespace: true
       terminationGracePeriodSeconds: 5
-      initContainers:
-        - name: copy-launcher
-          image: keyval/launcher:v0.1
-          command:
-            - cp
-            - -a
-            - /kv-launcher/.
-            - /odigos-launcher/
-          volumeMounts:
-            - name: launcherdir
-              mountPath: /odigos-launcher
       volumes:
         - name: {{ $releaseName }}-cloudfront
           secret:
             secretName: {{ $releaseName }}-cloudfront
-        - name: launcherdir
-          emptyDir: {}
-        - name: kernel-debug
-          hostPath:
-            path: /sys/kernel/debug
       containers:
         - name: {{ .Release.Name | quote }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          command:
-            - "/odigos-launcher/launch"
-            - "/bin/apisrv"
-            - "api"
           {{- if or .Values.environments .Values.secrets .Values.signedCookies }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
           - mountPath: /var/run/secrets/
             name: {{ $releaseName }}-cloudfront
-          - mountPath: /odigos-launcher
-            name: launcherdir
           env:
+          - name: HOST_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
           {{- range  $key, $value := .Values.environments }}
           - name: {{ $key }}
             valueFrom:
@@ -93,24 +75,6 @@ spec:
                 key: {{ $key }}
           {{- end }}
           {{- end }}
-        - name: apisrv-otel
-          image: keyval/otel-go-agent:v0.6.0
-          env:
-            - name: OTEL_TARGET_EXE
-              value: /bin/apisrv
-            - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "signoz-otel-collector.monitoring.svc.cluster.local:4317"
-            - name: OTEL_SERVICE_NAME
-              value: {{ $releaseName }}
-          securityContext:
-            runAsUser: 0
-            capabilities:
-              add:
-                - SYS_PTRACE
-            privileged: true
-          volumeMounts:
-            - mountPath: /sys/kernel/debug
-              name: kernel-debug
           ports:
           - containerPort: {{ .Values.service.targetPort | default 8080 }}
           startupProbe:
