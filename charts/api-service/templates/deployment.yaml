@@ -49,14 +49,12 @@ spec:
           - mountPath: /var/run/secrets/
             name: {{ $releaseName }}-cloudfront
           env:
-          - name: HOST_IP
+          - name: NODE_HOST
             valueFrom:
               fieldRef:
-                fieldPath: status.hostIP
-          - name: HOST_PORT
-            value: "4317"
+                fieldPath: spec.nodeName
           - name: OTEL_EXPORTER_OTLP_ENDPOINT
-            value: $(HOST_IP):$(HOST_PORT)
+            value: $(NODE_HOST):4317
           {{- range  $key, $value := .Values.environments }}
           - name: {{ $key }}
             valueFrom:
