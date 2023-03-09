@@ -1,5 +1,5 @@
 {{- if .Values.autoscaling.enabled }}
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ .Values.app.name | quote }}
@@ -20,5 +20,12 @@ spec:
         target:
           type: Utilization
           averageUtilization: {{ .Values.autoscaling.targetAverageUtilization | default 80 }}
+    {{- else if .Values.autoscaling.targetAverageValue }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: AverageValue
+          averageValue: {{ .Values.autoscaling.targetAverageValue | quote }}
     {{- end }}
 {{- end }}
