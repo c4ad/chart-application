@@ -1,4 +1,5 @@
 {{- $releaseName := .Release.Name}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -42,7 +43,7 @@ spec:
             secretName: {{ $releaseName }}-cloudfront
       containers:
         - name: {{ .Release.Name | quote }}
-          image: "{{ .Values.image.repository }}:'{{ .Values.image.tag }}'"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           {{- if or .Values.environments .Values.secrets .Values.signedCookies }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:

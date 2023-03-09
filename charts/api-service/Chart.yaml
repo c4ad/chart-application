@@ -3,4 +3,4 @@ name: api-service
 description: A Helm chart for Kubernetes api-services
 type: application
 icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
-version: 0.3.6
+version: 0.3.7
