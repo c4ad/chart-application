@@ -10,8 +10,6 @@ spec:
   ingressClassName: {{ .Values.ingress.className }}
   {{- with .Values.ingress.annotations }}
   annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: {{ .backendProtocol }}
-    kubernetes.io/ingress.class: {{ .class }}
   {{- end }}
   tls:
     - hosts: 
