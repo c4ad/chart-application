@@ -286,6 +286,16 @@ entries:
     version: 0.1.0
   n8n-service:
   - apiVersion: v2
+    created: "2023-03-16T12:52:52.994572421Z"
+    description: A Helm chart for Kubernetes api
+    digest: 0d6cdc1995c0cc35c7e7f8dccf866f4be0b695679fe07ac1197cfd168753911c
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    name: n8n-service
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/n8n-service-0.2.1/n8n-service-0.2.1.tgz
+    version: 0.2.1
+  - apiVersion: v2
     created: "2023-03-09T20:23:36.115938445Z"
     description: A Helm chart for Kubernetes api
     digest: 5d18e1d5cc59dc9e0c7eb2da2e02c4d2db9c4e5b79c661eeadba97309aea2d37
