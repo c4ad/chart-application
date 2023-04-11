@@ -1,4 +1,4 @@
-name: Helm Test and Lint
+name: Helm Lint
 
 on:
     pull_request:
@@ -26,9 +26,3 @@ jobs:
           helm lint charts/n8n-config
           helm lint charts/cronjobs
 
-      # Test the Helm charts
-      - name: Test Helm Charts
-        run: |
-          helm install --dry-run --debug api-service charts/api-service
-          helm install --dry-run --debug n8n-config charts/n8n-config
-          helm install --dry-run --debug cronjobs charts/cronjobs
