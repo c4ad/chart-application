@@ -287,6 +287,17 @@ entries:
   cronjobs:
   - apiVersion: v2
     appVersion: 1.16.0
+    created: "2023-04-12T19:45:40.826379403Z"
+    description: A Helm chart for Kubernetes
+    digest: c9127795b2b9bc1d60ade4dd6585eb193bcd39fedccbcffcee6e4769d8be022b
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    name: cronjobs
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/cronjobs-0.1.1/cronjobs-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.16.0
     created: "2023-04-12T19:22:32.361368588Z"
     description: A Helm chart for Kubernetes
     digest: ad4e4712c0249a4ca87d3be139a640ea1e239d0eafc8b58254f97fe59a76c015
