@@ -1,0 +1,15 @@
+# This is an example
+app:
+  name: python-cronjob
+
+schedule: "0 0 * * *"
+
+image:
+  repository: my-docker-registry/my-image
+  tag: v1.0
+  pullPolicy: IfNotPresent
+
+secrets:
+  mongoUser: "my-mongo-username"
+  mongoPassword: "my-mongo-password"
+  mongoCluster: "my-mongo-cluster-name"
