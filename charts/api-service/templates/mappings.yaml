@@ -1,0 +1,30 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "api-service.fullname" . -}}
+
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: 
+  labels: {{ $fullName }}
+    {{- include "api-service.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  circuit_breakers:
+    - max_connections: {{ .Values.maxConnections | default 2048 }}
+      max_pending_requests: {{ .Values.maxPendingRequests | default 2048 }}
+      max_retries: {{ .Values.maxRetries | default 10 }}
+  connect_timeout_ms: {{ .Values.connectTimeout | default 50000 }}
+  docs:
+    path: {{ .Values.docsPath | default "/.ambassador-internal/openapi-docs" }}
+  host: {{ .host | quote }}
+  prefix: {{ .Values.prefix | default "/" }}
+  retry_policy:
+    num_retries: {{ .Values.numRetries | default 10 }}
+    retry_on: {{ .Values.retryOn | default "5xx" }}
+  rewrite: {{ .Values.rewrite | default "/" }}
+  service: {{ $fullName }}
+  timeout_ms: {{ .Values.timeout | default 50000 }}
+{{- end }}
