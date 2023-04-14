@@ -19,7 +19,9 @@ spec:
   connect_timeout_ms: {{ .Values.connectTimeout | default 50000 }}
   docs:
     path: {{ .Values.docsPath | default "/.ambassador-internal/openapi-docs" }}
+{{- range .Values.ingress.hosts }}
   host: {{ .host | quote }}
+  {{- end }}
   prefix: {{ .Values.prefix | default "/" }}
   retry_policy:
     num_retries: {{ .Values.numRetries | default 10 }}
