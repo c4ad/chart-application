@@ -37,7 +37,7 @@ spec:
               service:
                 name: {{ $fullName }}
                 port:
-                  name: http
+                  name: {{ $svcPort | default 80 }}
           {{- end }}
     {{- end }}
 {{- else -}}
@@ -72,7 +72,7 @@ spec:
           - path: {{ .path }}
             backend:
               serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
+              servicePort: {{ $svcPort | default 80 }}
           {{- end }}
     {{- end }}
 {{- end }}
