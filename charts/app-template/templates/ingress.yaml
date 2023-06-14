@@ -1,31 +1,42 @@
 {{- if .Values.ingress.enabled -}}
+{{- $fullName := include "app-template.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
 
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Values.app.name }}
   labels:
-    {{- include "app-template.labels" $ | nindent 4 }}
-    app.kubernetes.io/component: {{ .Values.app.name }}
-  {{- if .Values.ingress.annotations }}
+    {{- include "app-template.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
   annotations:
-    {{- toYaml .Values.ingress.annotations | nindent 4 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
+  {{- if .Values.ingress.tls }}
   tls:
+    {{- range .Values.ingress.tls }}
     - hosts:
-        - {{ .Values.ingress.host }}
-      secretName: {{ .Values.app.name }}-cert
+        {{- range .hosts }}
+        - {{ . | quote }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
   rules:
-    - host: {{ .Values.ingress.host }}
+    {{- range .Values.ingress.hosts }}
+    - host: {{ .host | quote }}
       http:
         paths:
-          - path: {{ .Values.ingress.path }}
-            pathType: Prefix
+          {{- range .paths }}
+          - path: {{ .path }}
+            pathType: {{ .pathType }}
             backend:
               service:
                 name: {{ .Values.app.name }}
                 port:
-                  number: {{ .Values.service.port }}
-{{- end }}
+                  number: {{ $svcPort | default 80 }}
+          {{- end }}
+    {{- end }}
+  {{- end }}
