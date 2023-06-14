@@ -7,16 +7,16 @@ metadata:
   labels:
     {{- include "app-template.labels" $ | nindent 4 }}
     app.kubernetes.io/component: {{ .Values.app.name }}
-spec:
-  ingressClassName: {{ .Values.ingress.className }}
   {{- if .Values.ingress.annotations }}
   annotations:
     {{- toYaml .Values.ingress.annotations | nindent 4 }}
   {{- end }}
-  {{- if .Values.ingress.tls }}
+spec:
+  ingressClassName: {{ .Values.ingress.className }}
   tls:
-    {{- toYaml .Values.ingress.tls | nindent 4 }}
-  {{- end }}
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Values.app.name }}-cert
   rules:
     - host: {{ .Values.ingress.host }}
       http:
