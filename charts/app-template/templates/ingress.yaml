@@ -9,14 +9,14 @@ metadata:
     app.kubernetes.io/component: {{ .Values.app.name }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
-  {{- with .Values.ingress.annotations }}
+  {{- if .Values.ingress.annotations }}
   annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: {{ .backendProtocol }}
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
   {{- end }}
+  {{- if .Values.ingress.tls }}
   tls:
-    - hosts: 
-        - {{ .Values.ingress.host }}
-      secretName: {{ .Values.app.name }}-cert
+    {{- toYaml .Values.ingress.tls | nindent 4 }}
+  {{- end }}
   rules:
     - host: {{ .Values.ingress.host }}
       http:
