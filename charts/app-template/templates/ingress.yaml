@@ -5,7 +5,7 @@ kind: Ingress
 metadata:
   name: {{ .Values.app.name }}
   labels:
-    {{- include "api.labels" $ | nindent 4 }}
+    {{- include "app-template.labels" $ | nindent 4 }}
     app.kubernetes.io/component: {{ .Values.app.name }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
