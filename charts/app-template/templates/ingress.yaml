@@ -7,7 +7,7 @@ kind: Ingress
 metadata:
   name: { .Values.app.name }}
   labels:
-    {{- include "api-service.labels" . | nindent 4 }}
+    {{- include "app-template.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -45,7 +45,7 @@ kind: Ingress
 metadata:
   name: { .Values.app.name }}
   labels:
-    {{- include "api-service.labels" . | nindent 4 }}
+    {{- include "app-template.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
