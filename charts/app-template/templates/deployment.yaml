@@ -22,9 +22,9 @@ spec:
   template:
     metadata:
       annotations:
-      {{- with .Values.podAnnotations }}
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- end }}
       labels:
         app: {{ .Values.app.name | quote }}
     spec:
@@ -43,12 +43,10 @@ spec:
           {{- if or .Values.environments .Values.secrets .Values.signedCookies }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-          - name: NODE_HOST
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
-          - name: OTEL_EXPORTER_OTLP_ENDPOINT
-            value: $(NODE_HOST):4317
+            - name: NODE_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
           {{- range  $key, $value := .Values.environments }}
           - name: {{ $key }}
             valueFrom:
@@ -65,7 +63,7 @@ spec:
           {{- end }}
           {{- end }}
           ports:
-          - containerPort: {{ .Values.service.targetPort | default 8080 }}
+            - containerPort: {{ .Values.service.targetPort | default 8080 }}
           startupProbe:
             {{- if .Values.deployment.startupProbe.execProbeCommand }}
             exec:
