@@ -1,4 +1,4 @@
-{{- $releaseName := .Release.Name}}
+{{- $releaseName := .Release.Name }}
 
 apiVersion: apps/v1
 kind: Deployment
