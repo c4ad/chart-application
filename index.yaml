@@ -346,6 +346,16 @@ entries:
     version: 0.1.0
   app-template:
   - apiVersion: v2
+    created: "2023-06-16T15:03:58.48108262Z"
+    description: A Helm chart for Kubernetes app-templates
+    digest: 99a8c150bdf3b629711f1810810f42aef0fa46264e10cdae032ab6599fa1fb64
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    name: app-template
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/app-template-0.1.7/app-template-0.1.7.tgz
+    version: 0.1.7
+  - apiVersion: v2
     created: "2023-06-14T21:15:18.78450328Z"
     description: A Helm chart for Kubernetes app-templates
     digest: 544ecf1528d81cb063129f1452e08248bcced742777c7d6fd39e629edbbc8157
@@ -450,6 +460,16 @@ entries:
     - https://github.com/c4ad/chart-application/releases/download/cronjobs-0.1.0/cronjobs-0.1.0.tgz
     version: 0.1.0
   n8n-service:
+  - apiVersion: v2
+    created: "2023-06-16T15:03:58.619192572Z"
+    description: A Helm chart for Kubernetes api
+    digest: 5da238c880e5ed40b740cd1ccb0a82b361ed3434a738c87a2695a2406a2c691b
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    name: n8n-service
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/n8n-service-0.2.3/n8n-service-0.2.3.tgz
+    version: 0.2.3
   - apiVersion: v2
     created: "2023-03-16T13:03:18.376013232Z"
     description: A Helm chart for Kubernetes api
