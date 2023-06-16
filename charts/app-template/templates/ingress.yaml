@@ -9,7 +9,7 @@ metadata:
     {{- include "app-template.labels" . | nindent 4 }}
   {{- if .Values.ingress.annotations }}
   annotations:
-  {{ toYaml .Values.ingress.annotations | indent 4 }}
+    {{ toYaml .Values.ingress.annotations | indent 4 }}
   {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.className }}
@@ -33,9 +33,9 @@ spec:
             pathType: {{ .pathType }}
             backend:
               service:
-                name: {{ .Values.app.name }}
+                name: {{ $.Values.app.name }}
                 port:
                   number: {{ $svcPort | default 80 }}
           {{- end }}
     {{- end }}
-  {{- end }}
+{{- end }}
