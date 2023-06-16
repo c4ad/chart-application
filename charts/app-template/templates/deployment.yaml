@@ -7,24 +7,24 @@ metadata:
   labels:
     app: {{ .Values.app.name | quote }}
 spec:
-  {{- with default .Values.deployment (index .Values.deployment .Release.Namespace) }}
-  replicas: {{ .replicaCount | default 1 }}
-  {{- end }}
+  replicas: {{ .Values.deployment.replicaCount | default 1 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 0 }}
   strategy:
-    type: RollingUpdate
+    type: {{ .Values.strategy.type | default "RollingUpdate" }}
+    {{- if .Values.strategy.rollingUpdate }}
     rollingUpdate:
       maxSurge: {{ .Values.strategy.rollingUpdate.maxSurge }}
       maxUnavailable: {{ .Values.strategy.rollingUpdate.maxUnavailable }}
+    {{- end }}
   selector:
     matchLabels:
       app: {{ .Values.app.name | quote }}
   template:
     metadata:
       annotations:
-        {{- with .Values.podAnnotations }}
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-        {{- end }}
+      {{- end }}
       labels:
         app: {{ .Values.app.name | quote }}
     spec:
@@ -32,7 +32,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ .Values.app.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       shareProcessNamespace: true
@@ -43,10 +43,12 @@ spec:
           {{- if or .Values.environments .Values.secrets .Values.signedCookies }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: NODE_HOST
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
+          - name: NODE_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: $(NODE_HOST):4317
           {{- range  $key, $value := .Values.environments }}
           - name: {{ $key }}
             valueFrom:
@@ -63,7 +65,7 @@ spec:
           {{- end }}
           {{- end }}
           ports:
-            - containerPort: {{ .Values.service.targetPort | default 8080 }}
+          - containerPort: {{ .Values.service.targetPort | default 8080 }}
           startupProbe:
             {{- if .Values.deployment.startupProbe.execProbeCommand }}
             exec:

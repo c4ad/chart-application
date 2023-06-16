@@ -4,7 +4,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Values.app.name }}
+  name: {{ .Values.app.name | quote }}
   labels:
     {{- include "app-template.labels" . | nindent 4 }}
 {{- with .Values.ingress.annotations }}
@@ -33,7 +33,7 @@ spec:
             pathType: {{ .pathType }}
             backend:
               service:
-                name: {{ .Values.app.name }}
+                name: {{ $.Values.app.name | quote }}
                 port:
                   number: {{ $svcPort | default 80 }}
 {{- end }}

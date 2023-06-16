@@ -1,72 +1,59 @@
-# Default values for app-template.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
 app:
-  name: app-template
+  name: data-tools-dev
+
+image:
+  repository: 561077782093.dkr.ecr.us-east-1.amazonaws.com/data-tools
+  pullPolicy: IfNotPresent
+  tag: "latest"
 
 deployment:
   startupProbe:
-      tcpSocket: 8080
-  livenessProbe:
-      tcpSocket: 8080
-      initialDelaySeconds: 40
+      tcpSocket: 8084
   readinessProbe:
-      initialDelaySeconds: 40
-      tcpSocket: 8080
-  replicaCount: 1
-
-image:
-  repository: {} # aws ecr registry
-  pullPolicy: IfNotPresent
-  tag: ""
-
-nameOverride: ""
-fullnameOverride: ""
+      tcpSocket: 8084
+  livenessProbe:
+      tcpSocket: 8084
 
 strategy:
   rollingUpdate:
-    maxSurge: 1
-    maxUnavailable: 0
-
-environments: {}
+    maxSurge: 25%
+    maxUnavailable: 25%
 
 serviceAccount:
   create: true
-  name: app-template
-  annotations:
-    eks.amazonaws.com/role-arn: {}
-
-podAnnotations: {}
-
-podSecurityContext: {}
-
+  name: data-tools-dev
 service:
-  type: ClusterIP
-  port: 80
-
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-
+  targetPort: 8084
+  port: 8080
+environments:
+  ENVIRONMENT: dev
+  DB_NAME: platform-dev
+  COLLECTION_NAME: accounts
+  PORT: 8084
 resources:
   limits:
-    cpu: 200m
-    memory: 256Mi
+    cpu: "200m"
+    memory: "256Mi"
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: "50m"
+    memory: "128Mi"
 
 autoscaling:
   enabled: true
-  minReplicas: 1
-  maxReplicas: 2
-  targetAverageUtilization: 80
 
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
-variables: {}
+ingress:
+  enabled: true
+  className: internal-dev
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cross
+    kubernetes.io/tls-acme: "true"
+    app.kubernetes.io/name: data-tools
+  hosts:
+    - host: data-tools.dev.fitwel.org
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: data-tools-tls-secret
+      hosts:
+        - data-tools.dev.fitwel.org
