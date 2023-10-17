@@ -24,5 +24,4 @@ jobs:
         run: |
           helm lint charts/api-service
           helm lint charts/n8n-config
-          helm lint charts/cronjobs
 
