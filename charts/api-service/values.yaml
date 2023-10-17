@@ -23,10 +23,11 @@ deployment:
   readinessProbe:
     tcpSocket: 8080
     initialDelaySeconds: 40
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
+
+strategy:
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 0
 
 service:
   type: ClusterIP
@@ -62,7 +63,11 @@ autoscaling:
   enabled: true
   minReplicas: 1
   maxReplicas: 2
-  targetAverageUtilization: 80
+  cpu:
+    targetAverageUtilization: 70
+  memory:
+    targetAverageUtilization: 70
+
 
 nodeSelector: {}
 
