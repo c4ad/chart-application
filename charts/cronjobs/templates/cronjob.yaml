@@ -1,9 +1,7 @@
-{{- $releaseName := .Release.Name }}
-
-apiVersion: batch/v1
+apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: {{ .Values.app.name }}
+  name: {{ include "python-cronjob-chart.fullname" . }}
 spec:
   schedule: {{ .Values.schedule | quote }}
   jobTemplate:
@@ -15,11 +13,13 @@ spec:
             image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
             imagePullPolicy: {{ .Values.image.pullPolicy }}
             env:
-            {{- range $key, $value := .Values.secrets }}
-            - name: {{ $key }}
+            - name: MONGO_USER
+              value: {{ .Values.mongo.user }}
+            - name: MONGO_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ $releaseName }}-secret
-                  key: {{ $key }}
-            {{- end }}
+                  name: {{ .Values.mongo.secretName }}
+                  key: MONGO_PASSWORD
+            - name: MONGO_CLUSTER
+              value: {{ .Values.mongo.cluster }}
           restartPolicy: {{ .Values.restartPolicy }}

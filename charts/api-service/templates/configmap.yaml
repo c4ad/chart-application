@@ -3,10 +3,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-configmap
-  namespace:  {{ .Release.Namespace | default "default"}}
+  name: {{ include "api-service.fullname" . }}-configmap
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "api-service.labels" . | nindent 4 }}
 data:
-  {{- range  $key, $value := .Values.environments}}
-  {{$key }}: {{ $value | quote }}
+  {{- range $key, $value := .Values.environments }}
+  {{ $key }}: {{ $value | quote }}
   {{- end }}
-  {{- end }}
+{{- end }}

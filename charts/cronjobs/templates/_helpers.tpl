@@ -2,7 +2,7 @@
 Expand the name of the chart.
 */}}
 {{- define "cronjobs.name" -}}
-{{- default .Chart.Name .Values.app.name | trunc 63 | trimSuffix "-" }}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -12,9 +12,9 @@ If release name contains chart name it will be used as a full name.
 */}}
 {{- define "cronjobs.fullname" -}}
 {{- if .Values.fullnameOverride }}
-{{- .Values.app.name | trunc 63 | trimSuffix "-" }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := default .Chart.Name .Values.app.name }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
 {{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -37,15 +37,4 @@ Common labels
 helm.sh/chart: {{ include "cronjobs.chart" . }}
 app.kubernetes.io/name: {{ include "cronjobs.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
-
-{{/*
-Secret values
-*/}}
-{{- define "cronjobs.secretValues" -}}
-{{- $secret := dict }}
-{{- range $key, $value := .Values.secrets }}
-{{- $secret = merge $secret (dict $key $value) }}
-{{- end }}
-{{- $secret | toYaml | nindent 2 }}
 {{- end }}
