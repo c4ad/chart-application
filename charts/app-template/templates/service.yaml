@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.app.name | quote }}
+  namespace: {{ .Release.Namespace | default "default"}}
+  labels:
+    app: {{ .Values.app.name | quote }}
+spec:
+  ports:
+    - name: http-fitwel
+      port: {{ .Values.service.port | default 80 }}
+      targetPort: {{ .Values.service.targetPort | default 8080}}
+      protocol: TCP
+  selector:
+    app: {{ .Values.app.name }}
