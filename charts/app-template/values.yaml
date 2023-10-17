@@ -1,0 +1,59 @@
+app:
+  name: data-tools-dev
+
+image:
+  repository: 561077782093.dkr.ecr.us-east-1.amazonaws.com/data-tools
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+deployment:
+  startupProbe:
+      tcpSocket: 8084
+  readinessProbe:
+      tcpSocket: 8084
+  livenessProbe:
+      tcpSocket: 8084
+
+strategy:
+  rollingUpdate:
+    maxSurge: 25%
+    maxUnavailable: 25%
+
+serviceAccount:
+  create: true
+  name: data-tools-dev
+service:
+  targetPort: 8084
+  port: 8080
+environments:
+  ENVIRONMENT: dev
+  DB_NAME: platform-dev
+  COLLECTION_NAME: accounts
+  PORT: 8084
+resources:
+  limits:
+    cpu: "200m"
+    memory: "256Mi"
+  requests:
+    cpu: "50m"
+    memory: "128Mi"
+
+autoscaling:
+  enabled: true
+
+ingress:
+  enabled: true
+  className: internal-dev
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-cross
+    kubernetes.io/tls-acme: "true"
+    app.kubernetes.io/name: data-tools
+  hosts:
+    - host: data-tools.dev.fitwel.org
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: data-tools-tls-secret
+      hosts:
+        - data-tools.dev.fitwel.org
