@@ -13,14 +13,14 @@ entries:
     version: 0.1.0
   api-service:
   - apiVersion: v2
-    created: "2023-10-17T15:29:26.15874546Z"
+    created: "2023-10-17T15:29:29.523010979Z"
     description: A Helm chart for Kubernetes api-services
-    digest: 9741da6cd28ebbe26d24c9b72b6475ec538f842540a8a130451a4f801afefe0a
+    digest: bd0d79feefad0757268a43bb7b40ce8a3ce79b3a86c80e0f39c0a7eef2bd86ca
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     name: api-service
     type: application
     urls:
-    - https://github.com/c4ad/chart-application/releases/download/api-service-0.5.1/api-service-0.5.1.tgz
+    - https://c4ad.github.io/chart-application/api-service-0.5.1.tgz
     version: 0.5.1
   - apiVersion: v2
     created: "2023-06-16T15:39:34.848074736Z"
@@ -366,14 +366,14 @@ entries:
     version: 0.1.0
   app-template:
   - apiVersion: v2
-    created: "2023-06-16T18:37:55.063199911Z"
+    created: "2023-10-17T15:29:29.523946685Z"
     description: A Helm chart for Kubernetes app-templates
-    digest: 77efe91ca750d51b68f9da183129bccacf01453c3617f883e948675a67e28d8e
+    digest: 66ee5a77dd28c580869f80e7209a4879b9264b4211c21253ccaa82e0af31ee4b
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     name: app-template
     type: application
     urls:
-    - https://github.com/c4ad/chart-application/releases/download/app-template-0.2.4/app-template-0.2.4.tgz
+    - https://c4ad.github.io/chart-application/app-template-0.2.4.tgz
     version: 0.2.4
   - apiVersion: v2
     created: "2023-06-16T18:19:59.706738932Z"
@@ -551,14 +551,14 @@ entries:
     version: 0.1.0
   n8n-service:
   - apiVersion: v2
-    created: "2023-06-16T15:03:58.619192572Z"
+    created: "2023-10-17T15:29:29.524552089Z"
     description: A Helm chart for Kubernetes api
-    digest: 5da238c880e5ed40b740cd1ccb0a82b361ed3434a738c87a2695a2406a2c691b
+    digest: 5efb41b5d1f1c60e5995ccbd621e8859eb0110f9a4d23d8ff3ef0b5c97042827
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     name: n8n-service
     type: application
     urls:
-    - https://github.com/c4ad/chart-application/releases/download/n8n-service-0.2.3/n8n-service-0.2.3.tgz
+    - https://c4ad.github.io/chart-application/n8n-service-0.2.3.tgz
     version: 0.2.3
   - apiVersion: v2
     created: "2023-03-16T13:03:18.376013232Z"
@@ -600,4 +600,4 @@ entries:
     urls:
     - https://github.com/c4ad/chart-application/releases/download/n8n-service-0.1.0/n8n-service-0.1.0.tgz
     version: 0.1.0
-generated: "2022-10-21T17:53:28.14950635Z"
+generated: "2023-10-17T15:29:29.521832972Z"
