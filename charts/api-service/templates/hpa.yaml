@@ -1,5 +1,5 @@
 {{- if .Values.autoscaling.enabled }}
-apiVersion: autoscaling/v2
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ .Values.app.name | quote }}
@@ -10,15 +10,23 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ .Values.app.name | quote }}
-  minReplicas: {{ .Values.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  minReplicas: {{ .Values.autoscaling.minReplicas | default 2 }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas | default 10 }}
   metrics:
-    {{- if .Values.autoscaling.targetAverageUtilization }}
+    {{- if .Values.autoscaling.cpu.targetAverageUtilization }}
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .Values.autoscaling.targetAverageUtilization | default 80 }}
+          averageUtilization: {{ .Values.autoscaling.cpu.targetAverageUtilization | default 80 }}
+    {{- end }}
+    {{- if .Values.autoscaling.memory.targetAverageValue }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: AverageValue
+          averageValue: {{ .Values.autoscaling.memory.targetAverageValue }}
     {{- end }}
 {{- end }}

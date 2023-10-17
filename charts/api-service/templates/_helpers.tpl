@@ -60,3 +60,87 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Environment variables template
+*/}}
+{{- define "api-service.env" -}}
+{{- range $key, $value := .Values.environments }}
+- name: {{ $key }}
+  valueFrom:
+    configMapKeyRef:
+      name: {{ $.Release.Name }}-configmap  {{- /* Corrected .Release.Name reference */}}
+      key: {{ $key }}
+{{- end }}
+{{- range $key, $value := .Values.secrets }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ $.Release.Name }}-secret  {{- /* Corrected .Release.Name reference */}}
+      key: {{ $key }}
+{{- end }}
+{{- range $key, $value := .Values.signedCookies }}
+- name: {{ $key }}
+  valueFrom:
+    secretKeyRef:
+      name: {{ $.Release.Name }}-cloudfront  {{- /* Corrected .Release.Name reference */}}
+      key: {{ $key }}
+{{- end }}
+{{- end }}
+
+{{/*
+Probes template
+*/}}
+{{- define "api-service.probes" -}}
+startupProbe:
+  {{- if .Values.deployment.startupProbe.execProbeCommand }}
+  exec:
+    command:
+    {{- range $index, $value := .Values.deployment.startupProbe.execProbeCommand }}
+      - {{ $value }}
+    {{- end }}
+  {{- else if .Values.deployment.startupProbe.tcpSocket }}
+  tcpSocket:
+    port: {{ .Values.deployment.startupProbe.tcpSocket }}
+  {{- else }}
+  httpGet:
+    {{- if .Values.deployment.startupProbe.httpHeaders }}
+    httpHeaders:
+      - name: {{ .Values.deployment.startupProbe.httpHeaders.name | quote }}
+        value: {{ .Values.deployment.startupProbe.httpHeaders.value | quote }}
+    {{- end }}
+    path: {{ .Values.deployment.startupProbe.path }}
+    port: {{ .Values.deployment.startupProbe.port | default 8080 }}
+  failureThreshold: {{ .Values.deployment.startupProbe.failureThreshold | default 10 }}
+  periodSeconds: {{ .Values.deployment.startupProbe.periodSeconds | default 5 }}
+  {{- end }}
+livenessProbe:
+  {{- include "api-service.customProbe" .Values.deployment.livenessProbe | nindent 2 }}
+readinessProbe:
+  {{- include "api-service.customProbe" .Values.deployment.readinessProbe | nindent 2 }}
+{{- end }}
+
+{{/*
+Custom Probe template
+*/}}
+{{- define "api-service.customProbe" -}}
+{{- if .execProbeCommand }}
+exec:
+  command:
+  {{- range $index, $value := .execProbeCommand }}
+    - {{ $value }}
+  {{- end }}
+{{- else if .tcpSocket }}
+tcpSocket:
+  port: {{ .tcpSocket }}
+{{- else }}
+httpGet:
+  path: {{ .path }}
+  port: {{ .port | default 8080 }}
+{{- end }}
+initialDelaySeconds: {{ .initialDelaySeconds | default 5 }}
+periodSeconds: {{ .periodSeconds | default 1 }}
+timeoutSeconds: {{ .timeoutSeconds | default 1 }}
+successThreshold: {{ .successThreshold | default 1 }}
+failureThreshold: {{ .failureThreshold | default 1 }}
+{{- end }}
