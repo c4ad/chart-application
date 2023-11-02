@@ -4,7 +4,7 @@ metadata:
   name: {{ include "api-service.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "api-service.labels" . | nindent 4 }}
+    app: {{ .Values.app.name | quote }}
 spec:
   ports:
     - name: http-fitwel
