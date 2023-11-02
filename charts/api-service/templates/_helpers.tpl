@@ -40,7 +40,7 @@ helm.sh/chart: {{ include "api-service.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-app: {{ .Release.Name | quote }}
+app: {{ .Values.app.name | quote }}
 {{- end }}
 
 {{/*
@@ -49,7 +49,7 @@ Selector labels
 {{- define "api-service.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "api-service.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app: {{ .Release.Name | quote }}
+app: {{ .Values.app.name | quote }}
 {{- end }}
 
 {{/*
