@@ -47,7 +47,7 @@ app: {{ .Values.app.name | quote }}
 Selector labels
 */}}
 {{- define "api-service.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "api-service.name" . }}
+app.kubernetes.io/name: {{ .Values.app.name | quote }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app: {{ .Values.app.name | quote }}
 {{- end }}
