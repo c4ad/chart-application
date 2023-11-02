@@ -21,6 +21,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ .Values.app.name | quote }}
       app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      app: {{ .Release.Name | quote }}
   template:
     metadata:
       labels:
