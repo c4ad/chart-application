@@ -10,7 +10,7 @@ metadata:
     app.kubernetes.io/version: {{ .Values.image.tag | quote }}
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
 spec:
-  replicas: {{ .Values.replicaCount | default 1 }}
+  replicas: {{ .Values.deployment.replicaCount | default 1 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 0 }}
   strategy:
     type: RollingUpdate
@@ -53,7 +53,13 @@ spec:
           - mountPath: /var/run/secrets/
             name: {{ $releaseName }}-cloudfront
           env:
-          {{- include "api-service.env" . | nindent 12 }}
+          - name: NODE_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: $(NODE_HOST):4317
+          {{- include "api-service.env" . | nindent 10 }}
           {{- end }}
           ports:
           - containerPort: {{ .Values.service.targetPort | default 8080 }}
