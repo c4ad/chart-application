@@ -1,9 +1,11 @@
+{{- $releaseName := .Release.Name }}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "chart.fullname" . }}
+  name: {{ .Values.app.name | quote }}
   labels:
-    {{- include "chart.labels" . | nindent 4 }}
+    app: {{ .Values.app.name | quote }}
 spec:
   replicas: {{ .Values.deployment.replicaCount | default 1 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 0 }}
@@ -16,28 +18,29 @@ spec:
     {{- end }}
   selector:
     matchLabels:
-      {{- include "chart.selectorLabels" . | nindent 6 }}
+      app: {{ .Values.app.name | quote }}
   template:
     metadata:
       annotations:
-        {{- with .Values.podAnnotations }}
+      {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-        {{- end }}
+      {{- end }}
       labels:
-        {{- include "chart.selectorLabels" . | nindent 8 }}
+        app: {{ .Values.app.name | quote }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "chart.serviceAccountName" . }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       shareProcessNamespace: true
       terminationGracePeriodSeconds: 5
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .Release.Name | quote }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          {{- if or .Values.environments .Values.secrets .Values.signedCookies }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           - name: NODE_HOST
@@ -64,11 +67,67 @@ spec:
           ports:
           - containerPort: {{ .Values.service.targetPort | default 8080 }}
           startupProbe:
-            {{- include "chart.startupProbe" . | nindent 12 }}
+            {{- if .Values.deployment.startupProbe.execProbeCommand }}
+            exec:
+              command:
+                {{- range $index, $value := .Values.deployment.startupProbe.execProbeCommand }}
+                - {{ $value }}
+                  {{- end }}
+            {{ else if .Values.deployment.startupProbe.tcpSocket }}
+            tcpSocket:
+              port: {{ .Values.deployment.startupProbe.tcpSocket }}
+            {{ else }}
+            httpGet:
+              {{- if .Values.deployment.startupProbe.httpHeaders }}
+              httpHeaders:
+                - name: {{ .Values.deployment.startupProbe.httpHeaders.name | quote }}
+                  value: {{ .Values.deployment.startupProbe.httpHeaders.value | quote }}
+              {{- end }}
+              path: {{ .Values.deployment.startupProbe.path }}
+              port: {{ .Values.deployment.startupProbe.port | default 8080 }}
+            failureThreshold: {{ .Values.deployment.startupProbe.failureThreshold | default 10 }}
+            periodSeconds: {{ .Values.deployment.startupProbe.periodSeconds | default 5 }}
+          {{- end}}
           livenessProbe:
-            {{- include "chart.livenessProbe" . | nindent 12 }}
+            {{- if .Values.deployment.livenessProbe.execProbeCommand}}
+            exec:
+              command:
+                {{- range $index, $value := .Values.deployment.livenessProbe.execProbeCommand }}
+                - {{ $value }}
+                  {{- end }}
+            {{ else if .Values.deployment.livenessProbe.tcpSocket }}
+            tcpSocket:
+              port: {{ .Values.deployment.livenessProbe.tcpSocket }}
+            {{ else }}
+            httpGet:
+              path: {{ .Values.deployment.livenessProbe.path }}
+              port: {{ .Values.deployment.livenessProbe.port | default 8080 }}
+            {{- end}}
+            initialDelaySeconds: {{ .Values.deployment.livenessProbe.initialDelaySeconds | default 5 }}
+            periodSeconds: {{ .Values.deployment.livenessProbe.periodSeconds | default 1 }}
+            timeoutSeconds: {{ .Values.deployment.livenessProbe.timeoutSeconds | default 1 }}
+            successThreshold: {{ .Values.deployment.livenessProbe.successThreshold | default 1 }}
+            failureThreshold: {{ .Values.deployment.livenessProbe.failureThreshold | default 1 }}
           readinessProbe:
-            {{- include "chart.readinessProbe" . | nindent 12 }}
+            {{- if .Values.deployment.livenessProbe.execProbeCommand}}
+            exec:
+              command:
+                {{- range $index, $value := .Values.deployment.livenessProbe.execProbeCommand }}
+                - {{ $value }}
+                  {{- end }}
+            {{ else if .Values.deployment.readinessProbe.tcpSocket }}
+            tcpSocket:
+              port: {{ .Values.deployment.readinessProbe.tcpSocket }}
+            {{ else }}
+            httpGet:
+              path: {{ .Values.deployment.readinessProbe.path }}
+              port: {{ .Values.deployment.readinessProbe.port | default 8080 }}
+            {{- end}}
+            initialDelaySeconds: {{ .Values.deployment.readinessProbe.initialDelaySeconds | default 5 }}
+            periodSeconds: {{ .Values.deployment.readinessProbe.periodSeconds | default 1 }}
+            timeoutSeconds: {{ .Values.deployment.readinessProbe.timeoutSeconds | default 1 }}
+            successThreshold: {{ .Values.deployment.readinessProbe.successThreshold | default 1 }}
+            failureThreshold: {{ .Values.deployment.readinessProbe.failureThreshold | default 1 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

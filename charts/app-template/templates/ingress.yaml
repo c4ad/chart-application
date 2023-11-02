@@ -1,19 +1,18 @@
 {{- if .Values.ingress.enabled -}}
 {{- $svcPort := .Values.service.port -}}
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "chart.fullname" . }}
+  name: {{ .Values.app.name | quote }}
   labels:
-    {{- include "chart.labels" . | nindent 4 }}
+    {{- include "app-template.labels" . | nindent 4 }}
 {{- with .Values.ingress.annotations }}
   annotations:
 {{- toYaml . | nindent 4 }}
 {{- end }}
 spec:
-{{- with .Values.ingress.className }}
-  ingressClassName: {{ . }}
-{{- end }}
+  ingressClassName: {{ .Values.ingress.className }}
 {{- if .Values.ingress.tls }}
   tls:
 {{- range .Values.ingress.tls }}
@@ -31,10 +30,10 @@ spec:
         paths:
 {{- range .paths }}
           - path: {{ .path }}
-            pathType: {{ .pathType | default "Prefix" }}
+            pathType: {{ .pathType }}
             backend:
               service:
-                name: {{ $.Release.Name }}
+                name: {{ $.Values.app.name | quote }}
                 port:
                   number: {{ $svcPort | default 80 }}
 {{- end }}
