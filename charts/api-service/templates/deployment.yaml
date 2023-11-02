@@ -9,6 +9,7 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name | quote }}
     app.kubernetes.io/version: {{ .Values.image.tag | quote }}
     app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app: {{ .Release.Name | quote }}
 spec:
   replicas: {{ .Values.deployment.replicaCount | default 1 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 0 }}
@@ -27,6 +28,7 @@ spec:
       labels:
         app.kubernetes.io/name: {{ .Values.app.name | quote }}
         app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        app: {{ .Release.Name | quote }}
       annotations:
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
