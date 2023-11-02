@@ -13,6 +13,16 @@ entries:
     version: 0.1.0
   api-service:
   - apiVersion: v2
+    created: "2023-11-02T15:04:22.587860706Z"
+    description: A Helm chart for Kubernetes api-services
+    digest: a194ebf6478cd5b22d1a0e85fdf75c14ec9015b30a01ccf7bb5e01a1626642ca
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    name: api-service
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/api-service-0.5.2/api-service-0.5.2.tgz
+    version: 0.5.2
+  - apiVersion: v2
     created: "2023-10-17T15:29:29.523010979Z"
     description: A Helm chart for Kubernetes api-services
     digest: bd0d79feefad0757268a43bb7b40ce8a3ce79b3a86c80e0f39c0a7eef2bd86ca
