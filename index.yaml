@@ -13,6 +13,16 @@ entries:
     version: 0.1.0
   api-service:
   - apiVersion: v2
+    created: "2023-12-14T17:00:41.96779404Z"
+    description: A Helm chart for Kubernetes api-services
+    digest: 5883c9129881608b081ec582b9c4e848049edba5bcfde91658f2b8e578254885
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    name: api-service
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/api-service-0.6.5/api-service-0.6.5.tgz
+    version: 0.6.5
+  - apiVersion: v2
     created: "2023-12-14T16:54:19.860043415Z"
     description: A Helm chart for Kubernetes api-services
     digest: dae461bbdda2fa7817b72a05fc64b0bcd7df4c88cd14ba71abd6dc3e424fadff
@@ -505,6 +515,16 @@ entries:
     urls:
     - https://c4ad.github.io/chart-application/app-template-0.6.5.tgz
     version: 0.6.5
+  - apiVersion: v2
+    created: "2023-12-14T17:00:42.122459005Z"
+    description: A Helm chart for Kubernetes app-templates
+    digest: c1724629bc71a8c62eb0bff0199fc28121410214065c4ae1b83d569e2f9ebeab
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    name: app-template
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/app-template-0.2.6/app-template-0.2.6.tgz
+    version: 0.2.6
   - apiVersion: v2
     created: "2023-11-02T17:30:25.975174386Z"
     description: A Helm chart for Kubernetes app-templates
