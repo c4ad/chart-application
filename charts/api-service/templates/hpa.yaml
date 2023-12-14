@@ -10,7 +10,6 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ .Values.app.name | quote }}
-  minReplicas: {{ .Values.autoscaling.minReplicas | default 2 }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas | default 10 }}
   metrics:
     {{- if .Values.autoscaling.cpu.targetAverageUtilization }}
