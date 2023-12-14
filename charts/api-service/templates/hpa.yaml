@@ -10,6 +10,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ .Values.app.name | quote }}
+  minReplicas: {{ .Values.autoscaling.minReplicas | default 1 }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas | default 10 }}
   metrics:
     {{- if .Values.autoscaling.cpu.targetAverageUtilization }}
@@ -28,4 +29,19 @@ spec:
           type: AverageValue
           averageValue: {{ .Values.autoscaling.memory.targetAverageValue }}
     {{- end }}
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 300
+      selectPolicy: Max
+      policies:
+        - type: Pods
+          value: 4
+          periodSeconds: 60
+    scaleDown:
+      stabilizationWindowSeconds: 600
+      selectPolicy: Max
+      policies:
+        - type: Pods
+          value: 2
+          periodSeconds: 60
 {{- end }}
