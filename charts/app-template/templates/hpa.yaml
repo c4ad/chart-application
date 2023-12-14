@@ -1,4 +1,3 @@
-{{- if .Values.autoscaling.enabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -10,7 +9,6 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ .Values.app.name | quote }}
-  minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
     {{- if .Values.autoscaling.targetAverageUtilization }}
@@ -21,4 +19,3 @@ spec:
           type: Utilization
           averageUtilization: {{ .Values.autoscaling.targetAverageUtilization | default 80 }}
     {{- end }}
-{{- end }}
