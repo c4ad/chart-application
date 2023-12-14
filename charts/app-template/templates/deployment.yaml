@@ -72,7 +72,7 @@ spec:
               command:
                 {{- range $index, $value := .Values.deployment.startupProbe.execProbeCommand }}
                 - {{ $value }}
-                  {{- end }}
+                {{- end }}
             {{ else if .Values.deployment.startupProbe.tcpSocket }}
             tcpSocket:
               port: {{ .Values.deployment.startupProbe.tcpSocket }}
@@ -94,7 +94,7 @@ spec:
               command:
                 {{- range $index, $value := .Values.deployment.livenessProbe.execProbeCommand }}
                 - {{ $value }}
-                  {{- end }}
+                {{- end }}
             {{ else if .Values.deployment.livenessProbe.tcpSocket }}
             tcpSocket:
               port: {{ .Values.deployment.livenessProbe.tcpSocket }}
@@ -114,7 +114,7 @@ spec:
               command:
                 {{- range $index, $value := .Values.deployment.livenessProbe.execProbeCommand }}
                 - {{ $value }}
-                  {{- end }}
+                {{- end }}
             {{ else if .Values.deployment.readinessProbe.tcpSocket }}
             tcpSocket:
               port: {{ .Values.deployment.readinessProbe.tcpSocket }}
@@ -134,10 +134,16 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - {{ .Values.app.name | quote }}
+              topologyKey: "kubernetes.io/hostname"  # This ensures pods are scheduled on different nodes
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
