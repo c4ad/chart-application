@@ -15,7 +15,6 @@ deployment:
   readinessProbe:
       path: /health
       port: 5678
-  replicaCount: 1
 
 image:
   repository: {} # aws ecr registry

@@ -14,7 +14,6 @@ nameOverride: ""
 fullnameOverride: ""
 
 deployment:
-  replicaCount: 1
   startupProbe:
     tcpSocket: 8080
   livenessProbe:

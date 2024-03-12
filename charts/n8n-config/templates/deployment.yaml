@@ -10,7 +10,6 @@ metadata:
     app.kubernetes.io/component: {{ $appName }}
 spec:
   {{- with default .Values.deployment (index .Values.deployment .Release.Namespace) }}
-  replicas: {{ .replicaCount | default 1 }}
   {{- end }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 0 }}
   strategy:

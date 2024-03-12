@@ -7,7 +7,6 @@ metadata:
   labels:
     app: {{ .Values.app.name | quote }}
 spec:
-  replicas: {{ .Values.deployment.replicaCount | default 1 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 0 }}
   strategy:
     type: RollingUpdate
