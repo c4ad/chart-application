@@ -26,8 +26,8 @@ spec:
       resource:
         name: memory
         target:
-          type: AverageValue
-          averageValue: {{ .Values.autoscaling.memory.targetAverageValue }}
+          type: Utilization
+          averageUtilization: {{ .Values.autoscaling.memory.targetAverageUtilization | default 80 }}
     {{- end }}
   behavior:
     scaleUp:
