@@ -21,7 +21,7 @@ spec:
           type: Utilization
           averageUtilization: {{ .Values.autoscaling.cpu.targetAverageUtilization | default 80 }}
     {{- end }}
-    {{- if .Values.autoscaling.memory.targetAverageValue }}
+    {{- if .Values.autoscaling.memory.targetAverageUtilization }}
     - type: Resource
       resource:
         name: memory
