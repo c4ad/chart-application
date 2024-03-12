@@ -67,6 +67,7 @@ autoscaling:
   memory:
     targetAverageUtilization: 70
 
+behavior: {}
 
 nodeSelector: {}
 

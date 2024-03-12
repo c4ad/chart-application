@@ -30,18 +30,6 @@ spec:
           averageUtilization: {{ .Values.autoscaling.memory.targetAverageUtilization | default 80 }}
     {{- end }}
   behavior:
-    scaleUp:
-      stabilizationWindowSeconds: 300
-      selectPolicy: Max
-      policies:
-        - type: Pods
-          value: 4
-          periodSeconds: 60
-    scaleDown:
-      stabilizationWindowSeconds: 600
-      selectPolicy: Max
-      policies:
-        - type: Pods
-          value: 2
-          periodSeconds: 60
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 {{- end }}
