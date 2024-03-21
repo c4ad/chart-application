@@ -43,9 +43,6 @@ podAnnotations: {}
 
 podSecurityContext: {}
 
-secrets:
-  annotations: {}
-
 service:
   type: ClusterIP
   port: 80
