@@ -42,7 +42,7 @@ spec:
         - name: {{ .Release.Name | quote }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- if or .Values.environments .Values.secrets .Values.signedCookies }}
+          {{- if or .Values.environments .Values.secret .Values.signedCookies }}
           volumeMounts:
           - mountPath: /var/run/secrets/
             name: {{ $releaseName }}-cloudfront

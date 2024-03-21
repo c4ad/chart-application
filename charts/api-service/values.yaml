@@ -78,7 +78,7 @@ environments:
   # Example:
   # MONGODB_DATABASE_NAME: platform-live
 
-secrets:
+secret:
   # Example:
   # SECRET_KEY: my-secret-key
 
