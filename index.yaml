@@ -13,6 +13,16 @@ entries:
     version: 0.1.0
   api-service:
   - apiVersion: v2
+    created: "2024-03-21T18:05:55.674515328Z"
+    description: A Helm chart for Kubernetes api-services
+    digest: 45775d81725c1029fdc13140ef09fd6de755d39c1d0ae0df6debb2e3f988be2a
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    name: api-service
+    type: application
+    urls:
+    - https://c4ad.github.io/chart-application/api-service-0.7.5.tgz
+    version: 0.7.5
+  - apiVersion: v2
     created: "2024-03-21T16:40:54.026874795Z"
     description: A Helm chart for Kubernetes api-services
     digest: f198d5a87858f0088031ee23c42b75f7931418a28563b14aa62552389b7f7bc8
@@ -596,9 +606,9 @@ entries:
     - https://c4ad.github.io/chart-application/app-template-0.6.5.tgz
     version: 0.6.5
   - apiVersion: v2
-    created: "2024-03-21T16:40:54.028071707Z"
+    created: "2024-03-21T18:05:55.674971631Z"
     description: A Helm chart for Kubernetes app-templates
-    digest: c7cd6ba2cd9c346c0b7e8e52180d5afd002518f735c3f047559312153ea59947
+    digest: 74883ec2dd2b5c9b32be2abd4195e115ad2d38943480a2a63af0446dd7f9bebb
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     name: app-template
     type: application
@@ -801,9 +811,9 @@ entries:
     version: 0.1.0
   n8n-service:
   - apiVersion: v2
-    created: "2024-03-21T16:40:54.028558342Z"
+    created: "2024-03-21T18:05:55.675464604Z"
     description: A Helm chart for Kubernetes api
-    digest: 3ef8513bb8fb0095f4f6142962f61110aaf9a192a211cc11f4bb4001fc7a55ce
+    digest: 6abecf478ccf8ac558d16bf8c16396a19fe953116abe431db752af0c44963fd3
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     name: n8n-service
     type: application
@@ -860,4 +870,4 @@ entries:
     urls:
     - https://github.com/c4ad/chart-application/releases/download/n8n-service-0.1.0/n8n-service-0.1.0.tgz
     version: 0.1.0
-generated: "2024-03-21T16:40:54.026305006Z"
+generated: "2024-03-21T18:05:55.673946333Z"
