@@ -626,6 +626,16 @@ entries:
     - https://c4ad.github.io/chart-application/app-template-0.6.5.tgz
     version: 0.6.5
   - apiVersion: v2
+    created: "2024-03-25T21:54:48.295266852Z"
+    description: A Helm chart for Kubernetes app-templates
+    digest: 49c4a42b22baac4304754ebd1b166b1a4745cd07940360e2c4e5a007c3e10a0a
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    name: app-template
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/app-template-0.2.8/app-template-0.2.8.tgz
+    version: 0.2.8
+  - apiVersion: v2
     created: "2024-03-21T22:23:57.987285297Z"
     description: A Helm chart for Kubernetes app-templates
     digest: 4b1ce833f5092bc6ebeb855fc355b830d514113c6e9307ce09c511d8778a0ae8
