@@ -13,9 +13,9 @@ entries:
     version: 0.1.0
   api-service:
   - apiVersion: v2
-    created: "2024-03-28T14:41:02.608852977Z"
+    created: "2024-03-28T14:42:23.9702096Z"
     description: A Helm chart for Kubernetes api-services
-    digest: b657fb73be4ae821088a0c07bb839c1e28d9e914696fb4227b77a75f5fe71cc2
+    digest: 733a6da41a62f5c74e6e99b8046687397b0828f55be5fafb953bef4fcf31d63f
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     name: api-service
     type: application
@@ -636,9 +636,9 @@ entries:
     - https://c4ad.github.io/chart-application/app-template-0.6.5.tgz
     version: 0.6.5
   - apiVersion: v2
-    created: "2024-03-28T14:41:02.60929307Z"
+    created: "2024-03-28T14:42:23.971013992Z"
     description: A Helm chart for Kubernetes app-templates
-    digest: 57ea41753b2c4300bcb9abbd34affe0c578f74b167dc8db5f380604514b4064b
+    digest: 31276ef09e091656dbb71f46231830faded15f205fbbbef06fbe12faa3db8e3e
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     name: app-template
     type: application
@@ -871,9 +871,9 @@ entries:
     version: 0.1.0
   n8n-service:
   - apiVersion: v2
-    created: "2024-03-28T14:41:02.609735266Z"
+    created: "2024-03-28T14:42:23.971459637Z"
     description: A Helm chart for Kubernetes api
-    digest: e53290e5a8ee2870ffbe367a9d140be573fee56b837cb6bd57befe73d6b04adf
+    digest: 9456b6324debb870e13500137a80fa1429ec98d551dbc007832caeca97e83c7c
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     name: n8n-service
     type: application
@@ -930,4 +930,4 @@ entries:
     urls:
     - https://github.com/c4ad/chart-application/releases/download/n8n-service-0.1.0/n8n-service-0.1.0.tgz
     version: 0.1.0
-generated: "2024-03-28T14:41:02.607497459Z"
+generated: "2024-03-28T14:42:23.969221982Z"
