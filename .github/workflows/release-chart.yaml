@@ -8,7 +8,7 @@ on:
 jobs:
   sonar_lint:
     name: Sonar Scan
-    runs-on: self-hosted
+    runs-on: amd64
     permissions: read-all
     steps:
       - name: Checkout Code
