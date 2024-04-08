@@ -1,25 +1,12 @@
-{{- if .Values.environments }}
----
+{{- if .Values.config }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-configmap
-  namespace:  {{ .Release.Namespace | default "default"}}
+  name: {{ include "n8n.fullname" . }}
+  labels:
+    {{- include "n8n.labels" . | nindent 4 }}
 data:
-  {{- range  $key, $value := .Values.environments}}
-  {{$key }}: {{ $value | quote }}
-  {{- end }}
-  {{- end }}
----
-{{- if .Values.workflows }}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Release.Name }}-wf
-  namespace:  {{ .Release.Namespace | default "default"}}
-data:
-  {{- range  $key, $value := .Values.workflows }}
-  {{$key }}: {{ $value | quote }}
-  {{- end }}
-  {{- end }}
+  config.json: |
+{{ .Values.config | toPrettyJson | indent 4  }}
+
+{{- end }}
