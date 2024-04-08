@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           
@@ -42,6 +42,7 @@ jobs:
           helm lint charts/api-service
           helm lint charts/app-template
           helm lint charts/n8n
+          helm dependency build charts/n8n
 
       - name: Configure Git
         run: |
@@ -49,11 +50,10 @@ jobs:
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.1.0
+        uses: helm/chart-releaser-action@v1.6.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-      - uses: actions/checkout@v3
       - name: Publish Helm charts
         uses: stefanprodan/helm-gh-pages@master
         with:
