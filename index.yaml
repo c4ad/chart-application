@@ -877,6 +877,45 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 1.33.1
+    created: "2024-04-08T18:57:03.344848449Z"
+    dependencies:
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 18.6.1
+    description: A Kubernetes Helm chart for n8n a free and open fair-code licensed
+      node based Workflow Automation Tool. Easily automate tasks across different
+      services.
+    digest: 2cf2305d9df57e467d459b097bf9479c934247232de79faefb4064246543f80c
+    home: https://github.com/8gears/n8n-helm-chart
+    icon: https://avatars1.githubusercontent.com/u/45487711?s=200&v=4
+    keywords:
+    - Workflow Automation
+    - Workflow
+    - iPaaS
+    - integration-framework
+    - low-code-plattform
+    - low-code
+    maintainers:
+    - email: contact@8gears.com
+      name: 8gears AG
+    - email: _@8gears.com
+      name: n8n Community
+    name: n8n
+    sources:
+    - https://github.com/n8n-io/n8n
+    - https://n8n.io/
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/n8n-0.23.2/n8n-0.23.2.tgz
+    version: 0.23.2
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: changed
+          description: "Update application version of n8n 1.33.1"
+      artifacthub.io/prerelease: "false"
+    apiVersion: v2
+    appVersion: 1.33.1
     created: "2024-04-08T18:07:53.663392587Z"
     dependencies:
     - condition: redis.enabled
@@ -1009,4 +1048,4 @@ entries:
     urls:
     - https://github.com/c4ad/chart-application/releases/download/n8n-service-0.1.0/n8n-service-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-08T18:07:53.654878439Z"
+generated: "2024-04-08T18:57:03.34506381Z"
