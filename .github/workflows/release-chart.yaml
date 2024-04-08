@@ -42,7 +42,7 @@ jobs:
           helm lint charts/api-service
           helm lint charts/app-template
           helm lint charts/n8n
-          helm dependency build charts/n8n
+          helm repo add bitnami https://charts.bitnami.com/bitnami
 
       - name: Configure Git
         run: |
