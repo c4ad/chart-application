@@ -13,9 +13,9 @@ entries:
     version: 0.1.0
   api-service:
   - apiVersion: v2
-    created: "2024-04-08T19:43:53.983268987Z"
+    created: "2024-04-08T20:08:40.869528338Z"
     description: A Helm chart for Kubernetes api-services
-    digest: e5956ba3bebb3eb1c28366b0ce002663a637f2f0226f73cb2c03c11117cf771c
+    digest: ec0c048511b9df069769aa78cef7e994942b126ccb4a97ab9edf812c337586cf
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     name: api-service
     type: application
@@ -636,9 +636,9 @@ entries:
     - https://c4ad.github.io/chart-application/app-template-0.6.5.tgz
     version: 0.6.5
   - apiVersion: v2
-    created: "2024-04-08T19:43:53.983766215Z"
+    created: "2024-04-08T20:08:40.869948216Z"
     description: A Helm chart for Kubernetes app-templates
-    digest: 5d8efc6ac7007101d0317904d7e1fd63e6617b6cc4777ae8a24ac7dd3ec0360b
+    digest: f759ee60543186181ac2e3893b0c49ae60dd8c2aae4618c808b5350afeb6cb50
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     name: app-template
     type: application
@@ -877,7 +877,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 1.33.1
-    created: "2024-04-08T20:08:29.519937089Z"
+    created: "2024-04-08T20:08:40.876211407Z"
     dependencies:
     - condition: redis.enabled
       name: redis
@@ -886,7 +886,7 @@ entries:
     description: A Kubernetes Helm chart for n8n a free and open fair-code licensed
       node based Workflow Automation Tool. Easily automate tasks across different
       services.
-    digest: 52ae86d0621b220424d26b513dd1203b806bd8bbba0bbdadec01cd087ed6c2d5
+    digest: 8569b8509f59e3ae555bf5090b1d90c39a503ea5ae37f6cb1b60b6a3f83ab41b
     home: https://github.com/8gears/n8n-helm-chart
     icon: https://avatars1.githubusercontent.com/u/45487711?s=200&v=4
     keywords:
@@ -907,7 +907,7 @@ entries:
     - https://n8n.io/
     type: application
     urls:
-    - https://github.com/c4ad/chart-application/releases/download/n8n-0.23.10/n8n-0.23.10.tgz
+    - https://c4ad.github.io/chart-application/n8n-0.23.10.tgz
     version: 0.23.10
   - annotations:
       artifacthub.io/changes: |
@@ -1360,4 +1360,4 @@ entries:
     urls:
     - https://github.com/c4ad/chart-application/releases/download/n8n-service-0.1.0/n8n-service-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-08T20:08:29.52011334Z"
+generated: "2024-04-08T20:08:40.868678842Z"
