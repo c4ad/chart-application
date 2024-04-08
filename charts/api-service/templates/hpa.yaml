@@ -10,7 +10,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ .Values.app.name | quote }}
-  minReplicas: {{ .Values.autoscaling.minReplicas | default 2 }}
+  minReplicas: {{ .Values.autoscaling.minReplicas | default 1 }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas | default 10 }}
   metrics:
     {{- if .Values.autoscaling.cpu.targetAverageUtilization }}
@@ -21,12 +21,16 @@ spec:
           type: Utilization
           averageUtilization: {{ .Values.autoscaling.cpu.targetAverageUtilization | default 80 }}
     {{- end }}
-    {{- if .Values.autoscaling.memory.targetAverageValue }}
+    {{- if .Values.autoscaling.memory.targetAverageUtilization }}
     - type: Resource
       resource:
         name: memory
         target:
-          type: AverageValue
-          averageValue: {{ .Values.autoscaling.memory.targetAverageValue }}
+          type: Utilization
+          averageUtilization: {{ .Values.autoscaling.memory.targetAverageUtilization | default 80 }}
     {{- end }}
+  {{- with .Values.autoscaling.behavior }}
+  behavior:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 {{- end }}

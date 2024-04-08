@@ -5,12 +5,8 @@ kind: Deployment
 metadata:
   name: {{ .Values.app.name | quote }}
   labels:
-    app.kubernetes.io/name: {{ .Values.app.name | quote }}
-    app.kubernetes.io/instance: {{ .Release.Name | quote }}
-    app.kubernetes.io/version: {{ .Values.image.tag | quote }}
-    app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+    app: {{ .Values.app.name | quote }}
 spec:
-  replicas: {{ .Values.replicaCount | default 1 }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 0 }}
   strategy:
     type: RollingUpdate
@@ -19,13 +15,11 @@ spec:
       maxUnavailable: {{ .Values.strategy.rollingUpdate.maxUnavailable }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ .Values.app.name | quote }}
-      app.kubernetes.io/instance: {{ .Release.Name | quote }}
+      app: {{ .Values.app.name | quote }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ .Values.app.name | quote }}
-        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        app: {{ .Values.app.name | quote }}
       annotations:
       {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
@@ -53,7 +47,13 @@ spec:
           - mountPath: /var/run/secrets/
             name: {{ $releaseName }}-cloudfront
           env:
-          {{- include "api-service.env" . | nindent 12 }}
+          - name: NODE_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            value: $(NODE_HOST):4317
+          {{- include "api-service.env" . | nindent 10 }}
           {{- end }}
           ports:
           - containerPort: {{ .Values.service.targetPort | default 8080 }}

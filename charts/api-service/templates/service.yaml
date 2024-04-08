@@ -4,13 +4,12 @@ metadata:
   name: {{ include "api-service.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "api-service.labels" . | nindent 4 }}
+    app: {{ .Values.app.name | quote }}
 spec:
   ports:
-    - name: http
+    - name: http-fitwel
       port: {{ .Values.service.port | default 80 }}
       targetPort: {{ .Values.service.targetPort | default 8080 }}
       protocol: TCP
   selector:
-    app.kubernetes.io/name: {{ include "api-service.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+    app: {{ .Values.app.name | quote }}

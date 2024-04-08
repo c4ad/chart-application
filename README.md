@@ -23,7 +23,6 @@ The following table lists the configurable parameters of the chart and their def
 | `image.repository`         | Image repository                              | `{}`                |
 | `image.pullPolicy`         | Image pull policy                             | `IfNotPresent`      |
 | `image.tag`                | Image tag                                     | `""`                |
-| `deployment.replicaCount`  | Number of replica pods to deploy             | `1`                 |
 | `service.type`             | Kubernetes Service type                       | `ClusterIP`         |
 | `service.port`             | Service port                                  | `80`                |
 | `service.targetPort`       | Target port on the pods                       | `8080`              |

@@ -39,7 +39,7 @@ resources:
     memory: "128Mi"
 
 autoscaling:
-  enabled: true
+  enabled: false
 
 ingress:
   enabled: true
@@ -57,3 +57,5 @@ ingress:
     - secretName: data-tools-tls-secret
       hosts:
         - data-tools.dev.fitwel.org
+
+secrets: {}
