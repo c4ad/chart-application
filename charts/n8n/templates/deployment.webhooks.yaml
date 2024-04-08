@@ -67,7 +67,7 @@ spec:
               mountPath: {{ if semverCompare ">=1.0" (.Values.image.tag | default .Chart.AppVersion) }}/home/node/.n8n{{ else }}/root/.n8n{{ end }}
             {{- if .Values.config }}
             - name: config-volume
-              mountPath: /n8n-config
+              mountPath: /n8n
             {{- end }}
             {{- if or (.Values.secret) (.Values.existingSecret) }}
             - name: secret-volume
