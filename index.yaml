@@ -13,6 +13,16 @@ entries:
     version: 0.1.0
   api-service:
   - apiVersion: v2
+    created: "2024-04-10T17:16:59.270219355Z"
+    description: A Helm chart for Kubernetes api-services
+    digest: c09ff91bfe45e0df221afba9b60cef98fcc9bd15817a65f85f26ef11ec6b313e
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    name: api-service
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/api-service-0.8.0/api-service-0.8.0.tgz
+    version: 0.8.0
+  - apiVersion: v2
     created: "2024-04-08T20:08:40.869528338Z"
     description: A Helm chart for Kubernetes api-services
     digest: ec0c048511b9df069769aa78cef7e994942b126ccb4a97ab9edf812c337586cf
@@ -1360,4 +1370,4 @@ entries:
     urls:
     - https://github.com/c4ad/chart-application/releases/download/n8n-service-0.1.0/n8n-service-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-08T20:08:40.868678842Z"
+generated: "2024-04-10T17:16:59.27085177Z"
