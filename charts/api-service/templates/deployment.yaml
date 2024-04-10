@@ -51,8 +51,6 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
-          - name: OTEL_EXPORTER_OTLP_ENDPOINT
-            value: $(NODE_HOST):4317
           {{- include "api-service.env" . | nindent 10 }}
           {{- end }}
           ports:
