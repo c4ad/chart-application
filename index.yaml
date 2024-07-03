@@ -13,9 +13,9 @@ entries:
     version: 0.1.0
   api-service:
   - apiVersion: v2
-    created: "2024-04-10T17:17:07.690122579Z"
+    created: "2024-07-03T21:00:00.569270557Z"
     description: A Helm chart for Kubernetes api-services
-    digest: a9f5ad44a42e9ea603fbaf42f3af92c44dc4c04cd5e2b582af240b31b3146331
+    digest: 65b17d0b8b6618ecd8891b72425a046ca98b873567bb8792f0ed55ba2e7ba284
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     name: api-service
     type: application
@@ -646,14 +646,14 @@ entries:
     - https://c4ad.github.io/chart-application/app-template-0.6.5.tgz
     version: 0.6.5
   - apiVersion: v2
-    created: "2024-07-03T20:59:50.895380387Z"
+    created: "2024-07-03T21:00:00.569694407Z"
     description: A Helm chart for Kubernetes app-templates
-    digest: 24e66cbd10d8afe5230ea94a1821e2e7477dcd8e6240a17f4de64e06a96e1395
+    digest: 10acefc367792dee957f58e0a6f792d5516579fd89fac2e2785b2da4ae6a9d8a
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     name: app-template
     type: application
     urls:
-    - https://github.com/c4ad/chart-application/releases/download/app-template-0.3.1/app-template-0.3.1.tgz
+    - https://c4ad.github.io/chart-application/app-template-0.3.1.tgz
     version: 0.3.1
   - apiVersion: v2
     created: "2024-04-10T17:17:07.690588963Z"
@@ -897,7 +897,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 1.33.1
-    created: "2024-04-10T17:17:07.696587224Z"
+    created: "2024-07-03T21:00:00.576584634Z"
     dependencies:
     - condition: redis.enabled
       name: redis
@@ -906,7 +906,7 @@ entries:
     description: A Kubernetes Helm chart for n8n a free and open fair-code licensed
       node based Workflow Automation Tool. Easily automate tasks across different
       services.
-    digest: 4454b8341777e9b8062364a6fb5024f6a57fa997ebf99c7626529ca16ac866c3
+    digest: 386b77af3cd14349b6f95c7dbcececcfdd231bae20083ecbf28fb3d1101b88a1
     home: https://github.com/8gears/n8n-helm-chart
     icon: https://avatars1.githubusercontent.com/u/45487711?s=200&v=4
     keywords:
@@ -1380,4 +1380,4 @@ entries:
     urls:
     - https://github.com/c4ad/chart-application/releases/download/n8n-service-0.1.0/n8n-service-0.1.0.tgz
     version: 0.1.0
-generated: "2024-07-03T20:59:50.89559696Z"
+generated: "2024-07-03T21:00:00.56756883Z"
