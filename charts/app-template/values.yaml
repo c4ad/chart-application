@@ -42,7 +42,7 @@ autoscaling:
   enabled: false
 
 ingress:
-  enabled: true
+  enabled: false
   className: internal-dev
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-cross
