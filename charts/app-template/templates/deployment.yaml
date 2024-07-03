@@ -7,13 +7,13 @@ metadata:
   labels:
     app: {{ .Values.app.name | quote }}
 spec:
-  revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 0 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 3 }}
   strategy:
     type: {{ .Values.strategy.type | default "RollingUpdate" }}
     {{- if .Values.strategy.rollingUpdate }}
     rollingUpdate:
-      maxSurge: {{ .Values.strategy.rollingUpdate.maxSurge }}
-      maxUnavailable: {{ .Values.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.strategy.rollingUpdate.maxSurge | default "25%" }}
+      maxUnavailable: {{ .Values.strategy.rollingUpdate.maxUnavailable | default "25%" }}
     {{- end }}
   selector:
     matchLabels:
@@ -21,9 +21,9 @@ spec:
   template:
     metadata:
       annotations:
-      {{- with .Values.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- with .Values.podAnnotations }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
       labels:
         app: {{ .Values.app.name | quote }}
     spec:
@@ -31,40 +31,38 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ .Values.serviceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name | default "default" }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       shareProcessNamespace: true
-      terminationGracePeriodSeconds: 5
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds | default 30 }}
       containers:
         - name: {{ .Release.Name | quote }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          {{- if or .Values.environments .Values.secrets .Values.signedCookies }}
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
           env:
-          - name: NODE_HOST
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.nodeName
-          - name: OTEL_EXPORTER_OTLP_ENDPOINT
-            value: $(NODE_HOST):4317
-          {{- range  $key, $value := .Values.environments }}
-          - name: {{ $key }}
-            valueFrom:
-              configMapKeyRef:
-                name: {{ $releaseName }}-configmap
-                key: {{ $key }}
-          {{- end }}
-          {{- range $key, $value := .Values.secrets }}
-          - name: {{ $key }}
-            valueFrom:
-              secretKeyRef:
-                name: {{ $releaseName }}-secret
-                key: {{ $key }}
-          {{- end }}
-          {{- end }}
+            - name: NODE_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: $(NODE_HOST):4317
+            {{- range $key, $value := .Values.environments }}
+            - name: {{ $key }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $releaseName }}-configmap
+                  key: {{ $key }}
+            {{- end }}
+            {{- range $key, $value := .Values.secrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $releaseName }}-secret
+                  key: {{ $key }}
+            {{- end }}
           ports:
-          - containerPort: {{ .Values.service.targetPort | default 8080 }}
+            - containerPort: {{ .Values.service.targetPort | default 8080 }}
           startupProbe:
             {{- if .Values.deployment.startupProbe.execProbeCommand }}
             exec:
@@ -84,11 +82,11 @@ spec:
               {{- end }}
               path: {{ .Values.deployment.startupProbe.path }}
               port: {{ .Values.deployment.startupProbe.port | default 8080 }}
+            {{- end }}
             failureThreshold: {{ .Values.deployment.startupProbe.failureThreshold | default 10 }}
             periodSeconds: {{ .Values.deployment.startupProbe.periodSeconds | default 5 }}
-          {{- end}}
           livenessProbe:
-            {{- if .Values.deployment.livenessProbe.execProbeCommand}}
+            {{- if .Values.deployment.livenessProbe.execProbeCommand }}
             exec:
               command:
                 {{- range $index, $value := .Values.deployment.livenessProbe.execProbeCommand }}
@@ -101,17 +99,17 @@ spec:
             httpGet:
               path: {{ .Values.deployment.livenessProbe.path }}
               port: {{ .Values.deployment.livenessProbe.port | default 8080 }}
-            {{- end}}
-            initialDelaySeconds: {{ .Values.deployment.livenessProbe.initialDelaySeconds | default 5 }}
-            periodSeconds: {{ .Values.deployment.livenessProbe.periodSeconds | default 1 }}
+            {{- end }}
+            initialDelaySeconds: {{ .Values.deployment.livenessProbe.initialDelaySeconds | default 15 }}
+            periodSeconds: {{ .Values.deployment.livenessProbe.periodSeconds | default 20 }}
             timeoutSeconds: {{ .Values.deployment.livenessProbe.timeoutSeconds | default 1 }}
             successThreshold: {{ .Values.deployment.livenessProbe.successThreshold | default 1 }}
-            failureThreshold: {{ .Values.deployment.livenessProbe.failureThreshold | default 1 }}
+            failureThreshold: {{ .Values.deployment.livenessProbe.failureThreshold | default 3 }}
           readinessProbe:
-            {{- if .Values.deployment.livenessProbe.execProbeCommand}}
+            {{- if .Values.deployment.readinessProbe.execProbeCommand }}
             exec:
               command:
-                {{- range $index, $value := .Values.deployment.livenessProbe.execProbeCommand }}
+                {{- range $index, $value := .Values.deployment.readinessProbe.execProbeCommand }}
                 - {{ $value }}
                 {{- end }}
             {{ else if .Values.deployment.readinessProbe.tcpSocket }}
@@ -121,12 +119,12 @@ spec:
             httpGet:
               path: {{ .Values.deployment.readinessProbe.path }}
               port: {{ .Values.deployment.readinessProbe.port | default 8080 }}
-            {{- end}}
-            initialDelaySeconds: {{ .Values.deployment.readinessProbe.initialDelaySeconds | default 5 }}
-            periodSeconds: {{ .Values.deployment.readinessProbe.periodSeconds | default 1 }}
+            {{- end }}
+            initialDelaySeconds: {{ .Values.deployment.readinessProbe.initialDelaySeconds | default 10 }}
+            periodSeconds: {{ .Values.deployment.readinessProbe.periodSeconds | default 5 }}
             timeoutSeconds: {{ .Values.deployment.readinessProbe.timeoutSeconds | default 1 }}
             successThreshold: {{ .Values.deployment.readinessProbe.successThreshold | default 1 }}
-            failureThreshold: {{ .Values.deployment.readinessProbe.failureThreshold | default 1 }}
+            failureThreshold: {{ .Values.deployment.readinessProbe.failureThreshold | default 3 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
@@ -134,6 +132,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       affinity:
+        {{- if .Values.affinity }}
+        {{- toYaml .Values.affinity | nindent 8 }}
+        {{- else }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
@@ -142,7 +143,8 @@ spec:
                     operator: In
                     values:
                       - {{ .Values.app.name | quote }}
-              topologyKey: "kubernetes.io/hostname"  # This ensures pods are scheduled on different nodes
+              topologyKey: "kubernetes.io/hostname"  # Ensures pods are scheduled on different nodes
+        {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
