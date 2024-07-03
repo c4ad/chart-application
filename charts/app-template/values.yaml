@@ -25,6 +25,7 @@ serviceAccount:
 service:
   targetPort: 8084
   port: 8080
+  type: ClusterIP
 environments:
   ENVIRONMENT: dev
   DB_NAME: platform-dev

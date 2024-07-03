@@ -2,14 +2,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Values.app.name | quote }}
-  namespace: {{ .Release.Namespace | default "default"}}
+  namespace: {{ .Release.Namespace | default "default" | quote }}
   labels:
     app: {{ .Values.app.name | quote }}
 spec:
   ports:
-    - name: http-fitwel
+    - name: http
       port: {{ .Values.service.port | default 80 }}
-      targetPort: {{ .Values.service.targetPort | default 8080}}
+      targetPort: {{ .Values.service.targetPort | default 8080 }}
       protocol: TCP
   selector:
-    app: {{ .Values.app.name }}
+    app: {{ .Values.app.name | quote }}
