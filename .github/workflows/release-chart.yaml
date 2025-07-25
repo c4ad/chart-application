@@ -49,8 +49,11 @@ jobs:
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
 
-      - name: Auto-increment chart versions
+      - name: Auto-increment chart versions (in-memory only)
         run: |
           # Function to increment version in memory (no git commits)
           increment_version() {
@@ -58,12 +61,17 @@ jobs:
             local current_version=$(grep '^version:' "$chart_path/Chart.yaml" | awk '{print $2}')
             echo "Current version for $chart_path: $current_version"
             
-            # Check if tag exists
+            # Check if tag exists  
             local chart_name=$(basename "$chart_path")
             local tag_name="${chart_name}-${current_version}"
             
-            if git tag -l | grep -q "^${tag_name}$"; then
-              echo "Tag ${tag_name} already exists, incrementing patch version..."
+            # Get all existing releases from GitHub API
+            local existing_releases=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/c4ad/chart-application/releases" | \
+              jq -r '.[].tag_name')
+            
+            if echo "$existing_releases" | grep -q "^${tag_name}$"; then
+              echo "Release ${tag_name} already exists, incrementing patch version..."
               # Split version into major.minor.patch
               IFS='.' read -r major minor patch <<< "$current_version"
               new_patch=$((patch + 1))
@@ -73,7 +81,7 @@ jobs:
               sed -i "s/^version: .*/version: $new_version/" "$chart_path/Chart.yaml"
               echo "Updated $chart_path version to $new_version (temporarily)"
             else
-              echo "Tag ${tag_name} does not exist, keeping current version"
+              echo "Release ${tag_name} does not exist, keeping current version"
             fi
           }
           
@@ -85,31 +93,18 @@ jobs:
           done
 
       - name: Run chart-releaser
-        run: |
-          # Install chart-releaser
-          curl -sSLo cr.tar.gz "https://github.com/helm/chart-releaser/releases/download/v1.6.1/chart-releaser_1.6.1_linux_amd64.tar.gz"
-          tar -xzf cr.tar.gz
-          sudo mv cr /usr/local/bin/cr
-          rm -f cr.tar.gz
+        uses: helm/chart-releaser-action@v1.6.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_SKIP_EXISTING: "true"
           
-          # Create release packages directory
-          mkdir -p .cr-release-packages
-          
-          # Package charts
-          for chart_dir in charts/*/; do
-            if [[ -f "$chart_dir/Chart.yaml" ]]; then
-              echo "Packaging chart: $chart_dir"
-              cr package "$chart_dir" || echo "Failed to package $chart_dir, continuing..."
-            fi
-          done
-          
-          # Upload releases (skip existing to avoid conflicts)
-          cr upload --owner c4ad --git-repo chart-application --token "${{ secrets.GITHUB_TOKEN }}" --skip-existing || {
-            echo "Upload failed, but continuing with index update..."
-          }
-          
-          # Update the index
-          cr index --owner c4ad --git-repo chart-application --token "${{ secrets.GITHUB_TOKEN }}" --push || {
-            echo "Index update failed, trying without push flag..."
-            cr index --owner c4ad --git-repo chart-application --token "${{ secrets.GITHUB_TOKEN }}"
-          }
+      - name: Update Helm repository index
+        uses: stefanprodan/helm-gh-pages@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          charts_dir: charts
+          owner: c4ad
+          repository: chart-application
+          branch: gh-pages
+          commit_username: ${{ github.actor }}
+          commit_email: ${{ github.actor }}@users.noreply.github.com
