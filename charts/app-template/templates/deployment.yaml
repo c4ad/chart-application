@@ -76,27 +76,60 @@ spec:
               protocol: TCP
           {{- if .Values.deployment.startupProbe.enabled }}
           startupProbe:
-            {{- toYaml .Values.deployment.startupProbe.httpGet | nindent 12 }}
+            {{- if .Values.deployment.startupProbe.httpGet }}
+            httpGet:
+              {{- toYaml .Values.deployment.startupProbe.httpGet | nindent 14 }}
+            {{- end }}
+            {{- if .Values.deployment.startupProbe.failureThreshold }}
             failureThreshold: {{ .Values.deployment.startupProbe.failureThreshold }}
+            {{- end }}
+            {{- if .Values.deployment.startupProbe.periodSeconds }}
             periodSeconds: {{ .Values.deployment.startupProbe.periodSeconds }}
+            {{- end }}
           {{- end }}
           {{- if .Values.deployment.livenessProbe.enabled }}
           livenessProbe:
-            {{- toYaml .Values.deployment.livenessProbe.httpGet | nindent 12 }}
+            {{- if .Values.deployment.livenessProbe.httpGet }}
+            httpGet:
+              {{- toYaml .Values.deployment.livenessProbe.httpGet | nindent 14 }}
+            {{- end }}
+            {{- if .Values.deployment.livenessProbe.initialDelaySeconds }}
             initialDelaySeconds: {{ .Values.deployment.livenessProbe.initialDelaySeconds }}
+            {{- end }}
+            {{- if .Values.deployment.livenessProbe.periodSeconds }}
             periodSeconds: {{ .Values.deployment.livenessProbe.periodSeconds }}
+            {{- end }}
+            {{- if .Values.deployment.livenessProbe.timeoutSeconds }}
             timeoutSeconds: {{ .Values.deployment.livenessProbe.timeoutSeconds }}
+            {{- end }}
+            {{- if .Values.deployment.livenessProbe.successThreshold }}
             successThreshold: {{ .Values.deployment.livenessProbe.successThreshold }}
+            {{- end }}
+            {{- if .Values.deployment.livenessProbe.failureThreshold }}
             failureThreshold: {{ .Values.deployment.livenessProbe.failureThreshold }}
+            {{- end }}
           {{- end }}
           {{- if .Values.deployment.readinessProbe.enabled }}
           readinessProbe:
-            {{- toYaml .Values.deployment.readinessProbe.httpGet | nindent 12 }}
+            {{- if .Values.deployment.readinessProbe.httpGet }}
+            httpGet:
+              {{- toYaml .Values.deployment.readinessProbe.httpGet | nindent 14 }}
+            {{- end }}
+            {{- if .Values.deployment.readinessProbe.initialDelaySeconds }}
             initialDelaySeconds: {{ .Values.deployment.readinessProbe.initialDelaySeconds }}
+            {{- end }}
+            {{- if .Values.deployment.readinessProbe.periodSeconds }}
             periodSeconds: {{ .Values.deployment.readinessProbe.periodSeconds }}
+            {{- end }}
+            {{- if .Values.deployment.readinessProbe.timeoutSeconds }}
             timeoutSeconds: {{ .Values.deployment.readinessProbe.timeoutSeconds }}
+            {{- end }}
+            {{- if .Values.deployment.readinessProbe.successThreshold }}
             successThreshold: {{ .Values.deployment.readinessProbe.successThreshold }}
+            {{- end }}
+            {{- if .Values.deployment.readinessProbe.failureThreshold }}
             failureThreshold: {{ .Values.deployment.readinessProbe.failureThreshold }}
+            {{- end }}
           {{- end }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
