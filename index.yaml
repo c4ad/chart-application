@@ -659,6 +659,20 @@ entries:
       charts.openshift.io/name: app-template
       charts.openshift.io/supportedVersions: '>=1.29.0'
     apiVersion: v2
+    created: "2025-07-25T19:43:44.171816616Z"
+    description: A Helm chart for Kubernetes app-templates
+    digest: faabf63bf44f23951a9d89150291861d1106caa6deb475216d3684e3779a3130
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    kubeVersion: '>=1.29.0-0'
+    name: app-template
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/app-template-0.4.3/app-template-0.4.3.tgz
+    version: 0.4.3
+  - annotations:
+      charts.openshift.io/name: app-template
+      charts.openshift.io/supportedVersions: '>=1.29.0'
+    apiVersion: v2
     created: "2025-07-25T19:36:20.288280957Z"
     description: A Helm chart for Kubernetes app-templates
     digest: 943e5fe6eec4165578e98795d7635f50e028ea5a11da3795c499c150156e56cc
@@ -1477,4 +1491,4 @@ entries:
     urls:
     - https://github.com/c4ad/chart-application/releases/download/n8n-service-0.1.0/n8n-service-0.1.0.tgz
     version: 0.1.0
-generated: "2025-07-25T19:36:20.285875921Z"
+generated: "2025-07-25T19:43:44.285805681Z"
