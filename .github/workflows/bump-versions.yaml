@@ -1,0 +1,94 @@
+name: Bump Chart Versions
+
+on:
+  workflow_dispatch:
+    inputs:
+      charts:
+        description: 'Comma-separated list of charts to bump (e.g., app-template,api-service) or "all"'
+        required: true
+        default: 'all'
+
+jobs:
+  bump-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create branch for version bump
+        run: |
+          BRANCH_NAME="auto-bump-versions-$(date +%s)"
+          git checkout -b "$BRANCH_NAME"
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+
+      - name: Bump chart versions
+        run: |
+          # Function to increment version
+          increment_version() {
+            local chart_path=$1
+            local current_version=$(grep '^version:' "$chart_path/Chart.yaml" | awk '{print $2}')
+            echo "Current version for $chart_path: $current_version"
+            
+            # Split version into major.minor.patch
+            IFS='.' read -r major minor patch <<< "$current_version"
+            new_patch=$((patch + 1))
+            new_version="${major}.${minor}.${new_patch}"
+            
+            # Update Chart.yaml
+            sed -i "s/^version: .*/version: $new_version/" "$chart_path/Chart.yaml"
+            echo "Updated $chart_path version to $new_version"
+          }
+          
+          # Determine which charts to bump
+          if [[ "${{ github.event.inputs.charts }}" == "all" ]]; then
+            CHARTS_TO_BUMP=$(find charts -name "Chart.yaml" -exec dirname {} \;)
+          else
+            IFS=',' read -ra CHART_LIST <<< "${{ github.event.inputs.charts }}"
+            CHARTS_TO_BUMP=""
+            for chart in "${CHART_LIST[@]}"; do
+              if [[ -f "charts/$chart/Chart.yaml" ]]; then
+                CHARTS_TO_BUMP="$CHARTS_TO_BUMP charts/$chart"
+              else
+                echo "Warning: Chart $chart not found"
+              fi
+            done
+          fi
+          
+          # Bump versions
+          for chart_dir in $CHARTS_TO_BUMP; do
+            increment_version "$chart_dir"
+          done
+
+      - name: Commit and create PR
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            git add charts/*/Chart.yaml
+            git commit -m "chore: bump chart versions
+            
+            Auto-generated version bump for chart releases."
+            git push origin "$BRANCH_NAME"
+            
+            # Create PR using GitHub CLI
+            gh pr create \
+              --title "chore: Auto-bump chart versions" \
+              --body "This PR automatically bumps chart versions to avoid conflicts during releases.
+              
+              Charts updated:
+              $(git diff --name-only HEAD~1 | grep Chart.yaml | sed 's|charts/||' | sed 's|/Chart.yaml||' | sed 's/^/- /')
+              
+              🤖 This PR was created automatically by the bump-versions workflow." \
+              --base main \
+              --head "$BRANCH_NAME"
+          else
+            echo "No version changes needed"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
