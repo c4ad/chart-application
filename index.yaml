@@ -13,6 +13,16 @@ entries:
     version: 0.1.0
   api-service:
   - apiVersion: v2
+    created: "2025-07-25T19:15:44.639834901Z"
+    description: A Helm chart for Kubernetes api-services
+    digest: 5eeccc08b073cf2f6664a64c4415ead3d6c4cad8947bf64aa9b7ad93ec9201e5
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    name: api-service
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/api-service-0.8.1/api-service-0.8.1.tgz
+    version: 0.8.1
+  - apiVersion: v2
     created: "2024-07-03T21:25:33.895197048Z"
     description: A Helm chart for Kubernetes api-services
     digest: be17ee9070cc1e86982017743ad84a7013512956595283c04f6256995fb25c58
@@ -645,6 +655,20 @@ entries:
     urls:
     - https://c4ad.github.io/chart-application/app-template-0.6.5.tgz
     version: 0.6.5
+  - annotations:
+      charts.openshift.io/name: app-template
+      charts.openshift.io/supportedVersions: '>=1.29.0'
+    apiVersion: v2
+    created: "2025-07-25T19:15:44.767435352Z"
+    description: A Helm chart for Kubernetes app-templates
+    digest: fce3f86c7ec405f4f11c79e84a9f5d7e3949488fd4b67c4fed7461613240ec45
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    kubeVersion: '>=1.29.0-0'
+    name: app-template
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/app-template-0.4.1/app-template-0.4.1.tgz
+    version: 0.4.1
   - apiVersion: v2
     created: "2024-07-03T21:25:33.895634287Z"
     description: A Helm chart for Kubernetes app-templates
@@ -910,6 +934,45 @@ entries:
     - https://github.com/c4ad/chart-application/releases/download/cronjobs-0.1.0/cronjobs-0.1.0.tgz
     version: 0.1.0
   n8n:
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: changed
+          description: "Update application version of n8n 1.33.1"
+      artifacthub.io/prerelease: "false"
+    apiVersion: v2
+    appVersion: 1.33.1
+    created: "2025-07-25T19:15:44.959417813Z"
+    dependencies:
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 18.6.1
+    description: A Kubernetes Helm chart for n8n a free and open fair-code licensed
+      node based Workflow Automation Tool. Easily automate tasks across different
+      services.
+    digest: 312ad2daf0d4cc3eafd391a804ef480320b3d14c3c368ed74af2b577d9f1ed0b
+    home: https://github.com/8gears/n8n-helm-chart
+    icon: https://avatars1.githubusercontent.com/u/45487711?s=200&v=4
+    keywords:
+    - Workflow Automation
+    - Workflow
+    - iPaaS
+    - integration-framework
+    - low-code-plattform
+    - low-code
+    maintainers:
+    - email: contact@8gears.com
+      name: 8gears AG
+    - email: _@8gears.com
+      name: n8n Community
+    name: n8n
+    sources:
+    - https://github.com/n8n-io/n8n
+    - https://n8n.io/
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/n8n-0.23.11/n8n-0.23.11.tgz
+    version: 0.23.11
   - annotations:
       artifacthub.io/changes: |
         - kind: changed
@@ -1400,4 +1463,4 @@ entries:
     urls:
     - https://github.com/c4ad/chart-application/releases/download/n8n-service-0.1.0/n8n-service-0.1.0.tgz
     version: 0.1.0
-generated: "2024-07-03T21:25:33.894624736Z"
+generated: "2025-07-25T19:15:44.959768528Z"
