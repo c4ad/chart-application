@@ -10,7 +10,7 @@ jobs:
     steps:
       # Checkout the repository
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Install Helm
       - name: Install Helm
@@ -23,5 +23,6 @@ jobs:
       - name: Lint Helm Charts
         run: |
           helm lint charts/api-service
+          helm lint charts/app-template
           helm lint charts/n8n
 

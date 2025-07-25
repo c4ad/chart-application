@@ -1,62 +1,169 @@
-app:
-  name: data-tools-dev
+nameOverride: ""
+fullnameOverride: ""
 
 image:
-  repository: 561077782093.dkr.ecr.us-east-1.amazonaws.com/data-tools
+  repository: nginx
   pullPolicy: IfNotPresent
-  tag: "latest"
+  tag: "1.21"
+
+imagePullSecrets: []
+
+sidecarContainers: []
+  # - name: logging-sidecar
+  #   image: fluent/fluent-bit:latest
+  #   resources:
+  #     requests:
+  #       cpu: 10m
+  #       memory: 64Mi
+  #     limits:
+  #       cpu: 100m
+  #       memory: 128Mi
+  #   env:
+  #     - name: LOG_LEVEL
+  #       value: "info"
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65534
+  runAsGroup: 65534
+  fsGroup: 65534
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 65534
+  runAsGroup: 65534
+  capabilities:
+    drop:
+      - ALL
+  seccompProfile:
+    type: RuntimeDefault
 
 deployment:
+  replicaCount: 1
+  revisionHistoryLimit: 3
   startupProbe:
-      tcpSocket: 8084
+    enabled: true
+    httpGet:
+      path: /
+      port: http
+    failureThreshold: 10
+    periodSeconds: 5
   readinessProbe:
-      tcpSocket: 8084
+    enabled: true
+    httpGet:
+      path: /
+      port: http
+    initialDelaySeconds: 10
+    periodSeconds: 5
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
   livenessProbe:
-      tcpSocket: 8084
+    enabled: true
+    httpGet:
+      path: /
+      port: http
+    initialDelaySeconds: 15
+    periodSeconds: 20
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
 
 strategy:
+  type: RollingUpdate
   rollingUpdate:
     maxSurge: 25%
     maxUnavailable: 25%
 
 serviceAccount:
   create: true
-  name: data-tools-dev
+  annotations: {}
+  name: ""
 service:
-  targetPort: 8084
-  port: 8080
   type: ClusterIP
-environments:
-  ENVIRONMENT: dev
-  DB_NAME: platform-dev
-  COLLECTION_NAME: accounts
-  PORT: 8084
-resources:
-  limits:
-    cpu: "200m"
-    memory: "256Mi"
-  requests:
-    cpu: "50m"
-    memory: "128Mi"
+  port: 80
+  targetPort: http
+  annotations: {}
+env: {}
+  # Example:
+  # NODE_ENV: production
+  # PORT: 8080
+
+envFrom: []
+  # - configMapRef:
+  #     name: my-config
+  # - secretRef:
+  #     name: my-secret
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
 
 autoscaling:
   enabled: false
 
 ingress:
   enabled: false
-  className: internal-dev
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-cross
-    kubernetes.io/tls-acme: "true"
-    app.kubernetes.io/name: data-tools
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # cert-manager.io/cluster-issuer: letsencrypt
   hosts:
-    - host: data-tools.dev.fitwel.org
+    - host: chart-example.local
       paths:
         - path: /
           pathType: Prefix
-  tls:
-    - secretName: data-tools-tls-secret
-      hosts:
-        - data-tools.dev.fitwel.org
+  tls: []
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
 
 secrets: {}
+
+volumes: []
+  # - name: config
+  #   configMap:
+  #     name: my-config
+
+volumeMounts: []
+  # - name: config
+  #   mountPath: /etc/config
+  #   readOnly: true
+
+podAnnotations: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+terminationGracePeriodSeconds: 30
+
+topologySpreadConstraints: []
+  # - maxSkew: 1
+  #   topologyKey: kubernetes.io/hostname
+  #   whenUnsatisfiable: DoNotSchedule
+  #   labelSelector:
+  #     matchLabels:
+  #       app: data-tools-dev
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+
+networkPolicy:
+  enabled: false
+  policyTypes:
+    - Ingress
+  ingress: []
+  egress: []
+
+priorityClassName: ""
