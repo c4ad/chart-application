@@ -49,12 +49,59 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.6.0
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Auto-increment chart versions
+        run: |
+          # Function to increment version
+          increment_version() {
+            local chart_path=$1
+            local current_version=$(grep '^version:' "$chart_path/Chart.yaml" | awk '{print $2}')
+            echo "Current version for $chart_path: $current_version"
+            
+            # Check if tag exists
+            local chart_name=$(basename "$chart_path")
+            local tag_name="${chart_name}-${current_version}"
+            
+            if git tag -l | grep -q "^${tag_name}$"; then
+              echo "Tag ${tag_name} already exists, incrementing patch version..."
+              # Split version into major.minor.patch
+              IFS='.' read -r major minor patch <<< "$current_version"
+              new_patch=$((patch + 1))
+              new_version="${major}.${minor}.${new_patch}"
+              
+              # Update Chart.yaml
+              sed -i "s/^version: .*/version: $new_version/" "$chart_path/Chart.yaml"
+              echo "Updated $chart_path version to $new_version"
+            else
+              echo "Tag ${tag_name} does not exist, keeping current version"
+            fi
+          }
+          
+          # Auto-increment versions for all charts
+          for chart_dir in charts/*/; do
+            if [[ -f "$chart_dir/Chart.yaml" ]]; then
+              increment_version "$chart_dir"
+            fi
+          done
+          
+          # Commit version changes if any
+          if [[ -n $(git status --porcelain) ]]; then
+            git add charts/*/Chart.yaml
+            git commit -m "Auto-increment chart versions [skip ci]"
+            git push
+          fi
 
-      - name: Publish Helm charts
-        uses: stefanprodan/helm-gh-pages@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run chart-releaser
+        run: |
+          # Install chart-releaser
+          curl -sSLo cr.tar.gz "https://github.com/helm/chart-releaser/releases/download/v1.6.1/chart-releaser_1.6.1_linux_amd64.tar.gz"
+          tar -xzf cr.tar.gz
+          sudo mv cr /usr/local/bin/cr
+          rm -f cr.tar.gz
+          
+          # Package and release charts with skip-existing
+          cr package charts/app-template
+          cr package charts/api-service  
+          cr package charts/n8n
+          
+          cr upload --owner c4ad --git-repo chart-application --token "${{ secrets.GITHUB_TOKEN }}" --skip-existing
+          cr index --owner c4ad --git-repo chart-application --token "${{ secrets.GITHUB_TOKEN }}" --push
