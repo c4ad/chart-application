@@ -1,0 +1,65 @@
+# Example values.yaml for upgrading Redis and other tools
+
+# n8n configuration
+n8n:
+  encryption_key: "your-encryption-key" # Optional: If not specified, n8n creates a random key
+  
+  # Configure specific versions of tools used by n8n
+  versions:
+    node: "16.19.1"   # Specify Node.js version
+    npm: "8.19.3"     # Specify npm version
+    python: "3.10.0"  # Specify Python version
+
+# Redis configuration
+redis:
+  enabled: true
+  architecture: standalone
+  
+  # Redis authentication
+  auth:
+    enabled: true
+    password: "your-redis-password" # Optional: If not set, a random password will be generated
+  
+  # Redis persistence
+  master:
+    persistence:
+      enabled: true
+      size: 5Gi  # Increase storage size if needed
+  
+  # Redis metrics (optional)
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true  # Enable if you have Prometheus Operator installed
+
+# Database configuration example for PostgreSQL
+config:
+  database:
+    type: postgresdb
+    postgresdb:
+      database: n8n
+      host: postgres-service
+      port: 5432
+      user: n8n
+      schema: public
+      # Version configuration (if needed)
+      version: "14.5"
+
+# Add this to the secret section for database password
+# secret:
+#   database:
+#     postgresdb:
+#       password: 'your-postgres-password'
+
+# Worker configuration for distributed execution
+scaling:
+  enabled: true
+  worker:
+    count: 3             # Number of worker replicas
+    concurrency: 5       # Number of workflows each worker can run concurrently
+  
+  # Redis connection for workers
+  # If redis.enabled is true, this is automatically configured
+  redis:
+    # host: custom-redis-host  # Uncomment to use an external Redis host
+    # password: custom-redis-password  # Uncomment to set a specific Redis password

@@ -3,11 +3,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.app.name | quote }}
+  name: {{ include "app-template.fullname" . }}
   labels:
-    app: {{ .Values.app.name | quote }}
+    {{- include "app-template.labels" . | nindent 4 }}
 spec:
-  revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 3 }}
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.deployment.replicaCount }}
+  {{- end }}
+  revisionHistoryLimit: {{ .Values.deployment.revisionHistoryLimit }}
   strategy:
     type: {{ .Values.strategy.type | default "RollingUpdate" }}
     {{- if .Values.strategy.rollingUpdate }}
@@ -17,7 +20,7 @@ spec:
     {{- end }}
   selector:
     matchLabels:
-      app: {{ .Values.app.name | quote }}
+      {{- include "app-template.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       annotations:
@@ -25,21 +28,26 @@ spec:
           {{- toYaml . | nindent 8 }}
         {{- end }}
       labels:
-        app: {{ .Values.app.name | quote }}
+        {{- include "app-template.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ .Values.serviceAccount.name | default "default" }}
+      serviceAccountName: {{ include "app-template.serviceAccountName" . }}
+      {{- with .Values.priorityClassName }}
+      priorityClassName: {{ . }}
+      {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       shareProcessNamespace: true
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds | default 30 }}
       containers:
-        - name: {{ .Release.Name | quote }}
+        - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
           env:
             - name: NODE_HOST
               valueFrom:
@@ -47,86 +55,87 @@ spec:
                   fieldPath: spec.nodeName
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: $(NODE_HOST):4317
-            {{- range $key, $value := .Values.environments }}
+            {{- range $key, $value := .Values.env }}
             - name: {{ $key }}
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ $releaseName }}-configmap
-                  key: {{ $key }}
+              value: {{ $value | quote }}
             {{- end }}
             {{- range $key, $value := .Values.secrets }}
             - name: {{ $key }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ $releaseName }}-secret
+                  name: {{ include "app-template.fullname" $ }}-secret
                   key: {{ $key }}
             {{- end }}
+          {{- with .Values.envFrom }}
+          envFrom:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
-            - containerPort: {{ .Values.service.targetPort | default 8080 }}
+            - name: http
+              containerPort: {{ .Values.service.targetPort | default 8080 }}
+              protocol: TCP
+          {{- if .Values.deployment.startupProbe.enabled }}
           startupProbe:
-            {{- if .Values.deployment.startupProbe.execProbeCommand }}
-            exec:
-              command:
-                {{- range $index, $value := .Values.deployment.startupProbe.execProbeCommand }}
-                - {{ $value }}
-                {{- end }}
-            {{ else if .Values.deployment.startupProbe.tcpSocket }}
-            tcpSocket:
-              port: {{ .Values.deployment.startupProbe.tcpSocket }}
-            {{ else }}
-            httpGet:
-              {{- if .Values.deployment.startupProbe.httpHeaders }}
-              httpHeaders:
-                - name: {{ .Values.deployment.startupProbe.httpHeaders.name | quote }}
-                  value: {{ .Values.deployment.startupProbe.httpHeaders.value | quote }}
-              {{- end }}
-              path: {{ .Values.deployment.startupProbe.path }}
-              port: {{ .Values.deployment.startupProbe.port | default 8080 }}
-            {{- end }}
-            failureThreshold: {{ .Values.deployment.startupProbe.failureThreshold | default 10 }}
-            periodSeconds: {{ .Values.deployment.startupProbe.periodSeconds | default 5 }}
+            {{- toYaml .Values.deployment.startupProbe.httpGet | nindent 12 }}
+            failureThreshold: {{ .Values.deployment.startupProbe.failureThreshold }}
+            periodSeconds: {{ .Values.deployment.startupProbe.periodSeconds }}
+          {{- end }}
+          {{- if .Values.deployment.livenessProbe.enabled }}
           livenessProbe:
-            {{- if .Values.deployment.livenessProbe.execProbeCommand }}
-            exec:
-              command:
-                {{- range $index, $value := .Values.deployment.livenessProbe.execProbeCommand }}
-                - {{ $value }}
-                {{- end }}
-            {{ else if .Values.deployment.livenessProbe.tcpSocket }}
-            tcpSocket:
-              port: {{ .Values.deployment.livenessProbe.tcpSocket }}
-            {{ else }}
-            httpGet:
-              path: {{ .Values.deployment.livenessProbe.path }}
-              port: {{ .Values.deployment.livenessProbe.port | default 8080 }}
-            {{- end }}
-            initialDelaySeconds: {{ .Values.deployment.livenessProbe.initialDelaySeconds | default 15 }}
-            periodSeconds: {{ .Values.deployment.livenessProbe.periodSeconds | default 20 }}
-            timeoutSeconds: {{ .Values.deployment.livenessProbe.timeoutSeconds | default 1 }}
-            successThreshold: {{ .Values.deployment.livenessProbe.successThreshold | default 1 }}
-            failureThreshold: {{ .Values.deployment.livenessProbe.failureThreshold | default 3 }}
+            {{- toYaml .Values.deployment.livenessProbe.httpGet | nindent 12 }}
+            initialDelaySeconds: {{ .Values.deployment.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.deployment.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.deployment.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.deployment.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.deployment.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.deployment.readinessProbe.enabled }}
           readinessProbe:
-            {{- if .Values.deployment.readinessProbe.execProbeCommand }}
-            exec:
-              command:
-                {{- range $index, $value := .Values.deployment.readinessProbe.execProbeCommand }}
-                - {{ $value }}
-                {{- end }}
-            {{ else if .Values.deployment.readinessProbe.tcpSocket }}
-            tcpSocket:
-              port: {{ .Values.deployment.readinessProbe.tcpSocket }}
-            {{ else }}
-            httpGet:
-              path: {{ .Values.deployment.readinessProbe.path }}
-              port: {{ .Values.deployment.readinessProbe.port | default 8080 }}
-            {{- end }}
-            initialDelaySeconds: {{ .Values.deployment.readinessProbe.initialDelaySeconds | default 10 }}
-            periodSeconds: {{ .Values.deployment.readinessProbe.periodSeconds | default 5 }}
-            timeoutSeconds: {{ .Values.deployment.readinessProbe.timeoutSeconds | default 1 }}
-            successThreshold: {{ .Values.deployment.readinessProbe.successThreshold | default 1 }}
-            failureThreshold: {{ .Values.deployment.readinessProbe.failureThreshold | default 3 }}
+            {{- toYaml .Values.deployment.readinessProbe.httpGet | nindent 12 }}
+            initialDelaySeconds: {{ .Values.deployment.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.deployment.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.deployment.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.deployment.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.deployment.readinessProbe.failureThreshold }}
+          {{- end }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        {{- range .Values.sidecarContainers }}
+        - name: {{ .name }}
+          image: {{ .image }}
+          {{- if .command }}
+          command:
+            {{- toYaml .command | nindent 12 }}
+          {{- end }}
+          {{- if .args }}
+          args:
+            {{- toYaml .args | nindent 12 }}
+          {{- end }}
+          {{- if .env }}
+          env:
+            {{- toYaml .env | nindent 12 }}
+          {{- end }}
+          {{- if .ports }}
+          ports:
+            {{- toYaml .ports | nindent 12 }}
+          {{- end }}
+          {{- if .volumeMounts }}
+          volumeMounts:
+            {{- toYaml .volumeMounts | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .resources | nindent 12 }}
+          securityContext:
+            {{- if .securityContext }}
+            {{- toYaml .securityContext | nindent 12 }}
+            {{- else }}
+            {{- toYaml $.Values.containerSecurityContext | nindent 12 }}
+            {{- end }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -138,14 +147,19 @@ spec:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - labelSelector:
-                matchExpressions:
-                  - key: app
-                    operator: In
-                    values:
-                      - {{ .Values.app.name | quote }}
-              topologyKey: "kubernetes.io/hostname"  # Ensures pods are scheduled on different nodes
+                matchLabels:
+                  {{- include "app-template.selectorLabels" . | nindent 20 }}
+              topologyKey: "kubernetes.io/hostname"
         {{- end }}
       {{- with .Values.tolerations }}
       tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}

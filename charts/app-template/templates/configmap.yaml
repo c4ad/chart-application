@@ -1,12 +1,12 @@
-{{- if .Values.environments }}
----
+{{- if .Values.env }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-configmap
-  namespace:  {{ .Release.Namespace | default "default"}}
+  name: {{ include "app-template.fullname" . }}-configmap
+  labels:
+    {{- include "app-template.labels" . | nindent 4 }}
 data:
-  {{- range  $key, $value := .Values.environments}}
-  {{$key }}: {{ $value | quote }}
+  {{- range $key, $value := .Values.env }}
+  {{ $key }}: {{ $value | quote }}
   {{- end }}
-  {{- end }}
+{{- end }}

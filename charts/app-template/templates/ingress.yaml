@@ -1,10 +1,10 @@
 {{- if .Values.ingress.enabled -}}
-{{- $svcPort := .Values.service.port | default 80 }}
-
+{{- $fullName := include "app-template.fullname" . -}}
+{{- $svcPort := .Values.service.port -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Values.app.name | quote }}
+  name: {{ $fullName }}
   labels:
     {{- include "app-template.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
@@ -33,7 +33,7 @@ spec:
             pathType: {{ .pathType | default "Prefix" | quote }}
             backend:
               service:
-                name: {{ $.Values.app.name | quote }}
+                name: {{ $fullName }}
                 port:
                   number: {{ $svcPort }}
           {{- end }}
