@@ -13,9 +13,9 @@ entries:
     version: 0.1.0
   api-service:
   - apiVersion: v2
-    created: "2025-07-25T19:15:58.144442295Z"
+    created: "2025-07-25T19:17:37.541907583Z"
     description: A Helm chart for Kubernetes api-services
-    digest: 4a1de204ba8a474bd3abbdf26727338f29d91992a1f46ec52a6d0a7d6b90dc38
+    digest: a35bcbbcd8b2326afb89805d13b339fcc20dc684b4cf67bae818b8e8f4ffabbe
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     name: api-service
     type: application
@@ -659,9 +659,9 @@ entries:
       charts.openshift.io/name: app-template
       charts.openshift.io/supportedVersions: '>=1.29.0'
     apiVersion: v2
-    created: "2025-07-25T19:15:58.145036204Z"
+    created: "2025-07-25T19:17:37.542516892Z"
     description: A Helm chart for Kubernetes app-templates
-    digest: cdc947c4e23ce41ca0db856c3d88c18537f25a79da3b6d0f8830611611acd443
+    digest: c1505eb3cb588dfa25f171977358b4be8ebe49aaeb233142dea56258694768e7
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     kubeVersion: '>=1.29.0-0'
     name: app-template
@@ -941,7 +941,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 1.33.1
-    created: "2025-07-25T19:15:58.151195792Z"
+    created: "2025-07-25T19:17:37.549087022Z"
     dependencies:
     - condition: redis.enabled
       name: redis
@@ -950,7 +950,7 @@ entries:
     description: A Kubernetes Helm chart for n8n a free and open fair-code licensed
       node based Workflow Automation Tool. Easily automate tasks across different
       services.
-    digest: c925d23db78bacb07aa03e3d694fedf45de20f30f2be584a79792fa71fdc58e0
+    digest: 0519c90a359978999238e54b9e899dda9cc8a4b533522e922c43cd4beaa4ae74
     home: https://github.com/8gears/n8n-helm-chart
     icon: https://avatars1.githubusercontent.com/u/45487711?s=200&v=4
     keywords:
@@ -1463,4 +1463,4 @@ entries:
     urls:
     - https://github.com/c4ad/chart-application/releases/download/n8n-service-0.1.0/n8n-service-0.1.0.tgz
     version: 0.1.0
-generated: "2025-07-25T19:15:58.14381941Z"
+generated: "2025-07-25T19:17:37.541280289Z"
