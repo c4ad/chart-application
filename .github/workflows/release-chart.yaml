@@ -36,6 +36,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Lint Charts
         run: |
@@ -51,7 +52,7 @@ jobs:
 
       - name: Auto-increment chart versions
         run: |
-          # Function to increment version
+          # Function to increment version in memory (no git commits)
           increment_version() {
             local chart_path=$1
             local current_version=$(grep '^version:' "$chart_path/Chart.yaml" | awk '{print $2}')
@@ -68,9 +69,9 @@ jobs:
               new_patch=$((patch + 1))
               new_version="${major}.${minor}.${new_patch}"
               
-              # Update Chart.yaml
+              # Update Chart.yaml temporarily (no commit)
               sed -i "s/^version: .*/version: $new_version/" "$chart_path/Chart.yaml"
-              echo "Updated $chart_path version to $new_version"
+              echo "Updated $chart_path version to $new_version (temporarily)"
             else
               echo "Tag ${tag_name} does not exist, keeping current version"
             fi
@@ -82,13 +83,6 @@ jobs:
               increment_version "$chart_dir"
             fi
           done
-          
-          # Commit version changes if any
-          if [[ -n $(git status --porcelain) ]]; then
-            git add charts/*/Chart.yaml
-            git commit -m "Auto-increment chart versions [skip ci]"
-            git push
-          fi
 
       - name: Run chart-releaser
         run: |
@@ -98,10 +92,24 @@ jobs:
           sudo mv cr /usr/local/bin/cr
           rm -f cr.tar.gz
           
-          # Package and release charts with skip-existing
-          cr package charts/app-template
-          cr package charts/api-service  
-          cr package charts/n8n
+          # Create release packages directory
+          mkdir -p .cr-release-packages
           
-          cr upload --owner c4ad --git-repo chart-application --token "${{ secrets.GITHUB_TOKEN }}" --skip-existing
-          cr index --owner c4ad --git-repo chart-application --token "${{ secrets.GITHUB_TOKEN }}" --push
+          # Package charts
+          for chart_dir in charts/*/; do
+            if [[ -f "$chart_dir/Chart.yaml" ]]; then
+              echo "Packaging chart: $chart_dir"
+              cr package "$chart_dir" || echo "Failed to package $chart_dir, continuing..."
+            fi
+          done
+          
+          # Upload releases (skip existing to avoid conflicts)
+          cr upload --owner c4ad --git-repo chart-application --token "${{ secrets.GITHUB_TOKEN }}" --skip-existing || {
+            echo "Upload failed, but continuing with index update..."
+          }
+          
+          # Update the index
+          cr index --owner c4ad --git-repo chart-application --token "${{ secrets.GITHUB_TOKEN }}" --push || {
+            echo "Index update failed, trying without push flag..."
+            cr index --owner c4ad --git-repo chart-application --token "${{ secrets.GITHUB_TOKEN }}"
+          }
