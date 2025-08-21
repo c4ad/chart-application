@@ -1,0 +1,50 @@
+# Default values for workflows-operator
+# This is a YAML-formatted file
+# Declare variables to be passed into your templates
+
+namespace: workflows-operator
+
+environment:
+  name: dev
+  domain: ".dev.fitwel.org"
+  awsRegion: us-east-1
+  awsAccountId: "123456789012"
+
+registry:
+  usEast1: "123456789012.dkr.ecr.us-east-1.amazonaws.com"
+  caCentral1: "123456789012.dkr.ecr.ca-central-1.amazonaws.com"
+
+# Applications configuration
+# Each key represents an application to be deployed
+applications: {}
+  # Example structure:
+  # myapp:
+  #   basepath: "/MyApp"
+  #   replicas: 1
+  #   hpaMinReplicas: 1
+  #   hpaMaxReplicas: 4
+  #   targetCPUUtilizationPercentage: 100
+  #   ingress:
+  #     - enabled: true
+  #       ingressClass: alb
+  #       annotations: {}
+  #       tls: []
+  #       rules: []
+  #   containers:
+  #     - name: app
+  #       image: "myregistry/myapp:latest"
+  #       env:
+  #         - name: ENV_VAR
+  #           value: "value"
+  #       resources:
+  #         requests:
+  #           cpu: "100m"
+  #           memory: "256Mi"
+  #         limits:
+  #           cpu: "200m"
+  #           memory: "512Mi"
+  #   service:
+  #     - enabled: true
+  #       name: "myapp-service"
+  #       port: 80
+  #       targetPort: 3000
