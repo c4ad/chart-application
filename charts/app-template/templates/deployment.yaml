@@ -43,7 +43,7 @@ spec:
       shareProcessNamespace: true
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds | default 30 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ ".Release.Name" }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
           securityContext:
