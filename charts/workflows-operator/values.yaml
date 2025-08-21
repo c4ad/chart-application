@@ -8,11 +8,11 @@ environment:
   name: dev
   domain: ".dev.fitwel.org"
   awsRegion: us-east-1
-  awsAccountId: "561077782093"
+  awsAccountId: "123456789012"
 
 registry:
-  usEast1: "561077782093.dkr.ecr.us-east-1.amazonaws.com"
-  caCentral1: "561077782093.dkr.ecr.ca-central-1.amazonaws.com"
+  usEast1: "123456789012.dkr.ecr.us-east-1.amazonaws.com"
+  caCentral1: "123456789012.dkr.ecr.ca-central-1.amazonaws.com"
 
 # Applications configuration
 # Each key represents an application to be deployed
