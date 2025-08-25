@@ -17,34 +17,76 @@ registry:
 # Applications configuration
 # Each key represents an application to be deployed
 applications: {}
-  # Example structure:
-  # myapp:
-  #   basepath: "/MyApp"
+  # Example structure - email-service:
+  # email-service:
+  #   annotations:
+  #     avp.kubernetes.io/path: dev/secrets
+  #   basepath: "/EmailService"
   #   replicas: 1
   #   hpaMinReplicas: 1
-  #   hpaMaxReplicas: 4
-  #   targetCPUUtilizationPercentage: 100
+  #   hpaMaxReplicas: 3
+  #   targetCPUUtilizationPercentage: 80
   #   ingress:
   #     - enabled: true
   #       ingressClass: alb
-  #       annotations: {}
-  #       tls: []
-  #       rules: []
+  #       annotations:
+  #         alb.ingress.kubernetes.io/group.name: "internal-apps"
+  #         alb.ingress.kubernetes.io/scheme: internal
+  #         alb.ingress.kubernetes.io/target-type: ip
+  #         alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+  #         alb.ingress.kubernetes.io/healthcheck-path: "/health"
+  #       tls:
+  #         - hosts:
+  #             - "email-service{{ .Values.environment.domain }}"
+  #           secretName: "email-service-tls"
+  #       rules:
+  #         - host: "email-service{{ .Values.environment.domain }}"
+  #           path: "/"
   #   containers:
-  #     - name: app
-  #       image: "myregistry/myapp:latest"
+  #     - name: email-service
+  #       image: "{{ .Values.registry.usEast1 }}/email-service:latest"
   #       env:
-  #         - name: ENV_VAR
-  #           value: "value"
+  #         - name: ENVIRONMENT
+  #           value: "{{ .Values.environment.name }}"
+  #         - name: AWS_REGION
+  #           value: "{{ .Values.environment.awsRegion }}"
+  #         - name: AWS_ACCOUNT_ID
+  #           value: "{{ .Values.environment.awsAccountId }}"
+  #         - name: POSTGRES_HOST
+  #           value: "<path:dev/secrets#postgres-host>"
+  #         - name: POSTGRES_DB
+  #           value: "<path:dev/secrets#postgres-db>"
+  #         - name: POSTGRES_USER
+  #           value: "<path:dev/secrets#postgres-user>"
+  #         - name: POSTGRES_PASSWORD
+  #           value: "<path:dev/secrets#postgres-password>"
+  #         - name: POSTGRES_PORT
+  #           value: "<path:dev/secrets#postgres-port>"
   #       resources:
   #         requests:
   #           cpu: "100m"
   #           memory: "256Mi"
   #         limits:
-  #           cpu: "200m"
-  #           memory: "512Mi"
+  #           cpu: "500m"
+  #           memory: "1Gi"
+  #       livenessProbe:
+  #         httpGet:
+  #           path: /health
+  #           port: 5000
+  #         initialDelaySeconds: 60
+  #         periodSeconds: 30
+  #         timeoutSeconds: 10
+  #         failureThreshold: 3
+  #       readinessProbe:
+  #         httpGet:
+  #           path: /health
+  #           port: 5000
+  #         initialDelaySeconds: 30
+  #         periodSeconds: 10
+  #         timeoutSeconds: 5
+  #         failureThreshold: 3
   #   service:
   #     - enabled: true
-  #       name: "myapp-service"
+  #       name: "email-service"
   #       port: 80
-  #       targetPort: 3000
+  #       targetPort: 5000

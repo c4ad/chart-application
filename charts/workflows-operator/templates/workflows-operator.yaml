@@ -57,6 +57,14 @@ spec:
       resources:
         {{- toYaml .resources | nindent 8 }}
       {{- end }}
+      {{- if .livenessProbe }}
+      livenessProbe:
+        {{- toYaml .livenessProbe | nindent 8 }}
+      {{- end }}
+      {{- if .readinessProbe }}
+      readinessProbe:
+        {{- toYaml .readinessProbe | nindent 8 }}
+      {{- end }}
     {{- end }}
   {{- if $app.service }}
   service:
