@@ -659,6 +659,20 @@ entries:
       charts.openshift.io/name: app-template
       charts.openshift.io/supportedVersions: '>=1.29.0'
     apiVersion: v2
+    created: "2025-08-28T20:35:14.127289884Z"
+    description: A Helm chart for Kubernetes app-templates
+    digest: f4e508535d893f7c61bbed0f0fb4e111eb4cf6e0b4c2629035f7a36c772b7a1e
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    kubeVersion: '>=1.29.0-0'
+    name: app-template
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/app-template-0.4.4/app-template-0.4.4.tgz
+    version: 0.4.4
+  - annotations:
+      charts.openshift.io/name: app-template
+      charts.openshift.io/supportedVersions: '>=1.29.0'
+    apiVersion: v2
     created: "2025-08-26T19:37:04.053143608Z"
     description: A Helm chart for Kubernetes app-templates
     digest: 3e19aeae4dfd9d754c4b231a9b14ed839f4c8f91140c41e57bc1cc1539e63907
@@ -1534,4 +1548,4 @@ entries:
     urls:
     - https://c4ad.github.io/chart-application/workflows-operator-0.1.0.tgz
     version: 0.1.0
-generated: "2025-08-26T19:37:04.051814038Z"
+generated: "2025-08-28T20:35:14.490359086Z"
