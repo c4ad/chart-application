@@ -13,9 +13,9 @@ entries:
     version: 0.1.0
   api-service:
   - apiVersion: v2
-    created: "2025-08-28T20:35:27.905218912Z"
+    created: "2025-08-28T20:43:49.960208256Z"
     description: A Helm chart for Kubernetes api-services
-    digest: a3e061105f39e3b160e7ccca75f078306ffed9cdfb6d18016051468b3bb30bf7
+    digest: c056ab5ec675954ec1b4532efebd576485f0e316e292cfc98dc1eadf10423529
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     name: api-service
     type: application
@@ -659,15 +659,15 @@ entries:
       charts.openshift.io/name: app-template
       charts.openshift.io/supportedVersions: '>=1.29.0'
     apiVersion: v2
-    created: "2025-08-28T20:43:35.036128933Z"
+    created: "2025-08-28T20:43:49.960835511Z"
     description: A Helm chart for Kubernetes app-templates
-    digest: 6af77e1adc82d4ef0a82e38dbd35637abf3c4ad12450a49539f9aa55ff49f11a
+    digest: cd4636e94c47b1b62c92556b3c3c425c7cb89a78f56fecc1b550e190eed64127
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     kubeVersion: '>=1.29.0-0'
     name: app-template
     type: application
     urls:
-    - https://github.com/c4ad/chart-application/releases/download/app-template-0.4.5/app-template-0.4.5.tgz
+    - https://c4ad.github.io/chart-application/app-template-0.4.5.tgz
     version: 0.4.5
   - annotations:
       charts.openshift.io/name: app-template
@@ -997,7 +997,7 @@ entries:
       artifacthub.io/prerelease: "false"
     apiVersion: v2
     appVersion: 1.33.1
-    created: "2025-08-28T20:35:27.911533014Z"
+    created: "2025-08-28T20:43:49.967172147Z"
     dependencies:
     - condition: redis.enabled
       name: redis
@@ -1006,7 +1006,7 @@ entries:
     description: A Kubernetes Helm chart for n8n a free and open fair-code licensed
       node based Workflow Automation Tool. Easily automate tasks across different
       services.
-    digest: 50a4efab72fe792debd2fd6bc55a571b5759ffe4fa943b3cb5eddc660209ae80
+    digest: 7b54c87b7afc35dd9e2380f395a55679348d04a3f3b53adf21147493f70bc3a4
     home: https://github.com/8gears/n8n-helm-chart
     icon: https://avatars1.githubusercontent.com/u/45487711?s=200&v=4
     keywords:
@@ -1524,9 +1524,9 @@ entries:
       charts.openshift.io/name: workflows-operator
       charts.openshift.io/supportedVersions: '>=1.29.0'
     apiVersion: v2
-    created: "2025-08-28T20:35:27.911805607Z"
+    created: "2025-08-28T20:43:49.967419106Z"
     description: A Helm chart for Fitwel workflows operator applications
-    digest: 28bfdb2a77924f86fc2b4720917ab1dcc34a05368b2d0b87862c9180a68abeba
+    digest: df05831dc378a71dc61a4cd6e036c868285c5e5d23e667347d6faf066b4f253e
     icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
     kubeVersion: '>=1.29.0-0'
     name: workflows-operator
@@ -1562,4 +1562,4 @@ entries:
     urls:
     - https://c4ad.github.io/chart-application/workflows-operator-0.1.0.tgz
     version: 0.1.0
-generated: "2025-08-28T20:43:35.548042888Z"
+generated: "2025-08-28T20:43:49.959623799Z"
