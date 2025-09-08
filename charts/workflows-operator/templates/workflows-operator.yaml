@@ -16,6 +16,9 @@ spec:
   hpaMinReplicas: {{ $app.hpaMinReplicas | default 1 }}
   hpaMaxReplicas: {{ $app.hpaMaxReplicas | default 4 }}
   targetCPUUtilizationPercentage: {{ $app.targetCPUUtilizationPercentage | default 100 }}
+  {{- if $app.serviceAccount }}
+  serviceAccountName: {{ $app.serviceAccount }}
+  {{- end }}
   {{- if $app.ingress }}
   ingress:
     {{- range $app.ingress }}
