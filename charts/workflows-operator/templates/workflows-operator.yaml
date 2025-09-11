@@ -5,6 +5,13 @@ kind: WorkflowsOperator
 metadata:
   name: {{ $name }}
   namespace: {{ $.Values.namespace }}
+  {{- if $app.avp }}
+  annotations:
+    avp.kubernetes.io/path: {{ $app.avp.path | quote }}
+    {{- if $app.avp.type }}
+    avp.kubernetes.io/type: {{ $app.avp.type | quote }}
+    {{- end }}
+  {{- end }}
 spec:
   {{- if $app.annotations }}
   annotations:

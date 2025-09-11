@@ -19,8 +19,11 @@ registry:
 applications: {}
   # Example structure - email-service:
   # email-service:
+  #   avp:
+  #     path: "dev/secrets"
+  #     type: "aws-secrets-manager"
   #   annotations:
-  #     avp.kubernetes.io/path: dev/secrets
+  #     app.kubernetes.io/name: "email-service"
   #   basepath: "/EmailService"
   #   replicas: 1
   #   hpaMinReplicas: 1
@@ -63,6 +66,10 @@ applications: {}
   #           value: "<path:dev/secrets#postgres-password>"
   #         - name: POSTGRES_PORT
   #           value: "<path:dev/secrets#postgres-port>"
+  #         - name: JWT_SECRET
+  #           value: "<path:dev/secrets#jwt-secret>"
+  #         - name: API_KEY
+  #           value: "<path:dev/secrets#api-key>"
   #         - name: SECRET_KEY
   #           valueFrom:
   #             secretKeyRef:
