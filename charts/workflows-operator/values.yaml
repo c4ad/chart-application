@@ -26,6 +26,7 @@ applications: {}
   #   hpaMinReplicas: 1
   #   hpaMaxReplicas: 3
   #   targetCPUUtilizationPercentage: 80
+  #   serviceAccount: "email-service-sa"
   #   ingress:
   #     - enabled: true
   #       ingressClass: alb
@@ -62,6 +63,16 @@ applications: {}
   #           value: "<path:dev/secrets#postgres-password>"
   #         - name: POSTGRES_PORT
   #           value: "<path:dev/secrets#postgres-port>"
+  #         - name: SECRET_KEY
+  #           valueFrom:
+  #             secretKeyRef:
+  #               name: app-secrets
+  #               key: secret-key
+  #         - name: CONFIG_MAP_VALUE
+  #           valueFrom:
+  #             configMapKeyRef:
+  #               name: app-config
+  #               key: config-value
   #       resources:
   #         requests:
   #           cpu: "100m"
@@ -85,6 +96,19 @@ applications: {}
   #         periodSeconds: 10
   #         timeoutSeconds: 5
   #         failureThreshold: 3
+  #   secrets:
+  #     - name: "database-credentials"
+  #       secretName: "db-secret"
+  #       mountPath: "/etc/secrets/db"
+  #       readOnly: true
+  #     - name: "api-keys"
+  #       secretName: "api-secret"
+  #       mountPath: "/etc/secrets/api"
+  #       subPath: "api.key"
+  #       readOnly: true
+  #     - name: "config-files"
+  #       secretName: "app-config"
+  #       mountPath: "/etc/config"
   #   service:
   #     - enabled: true
   #       name: "email-service"

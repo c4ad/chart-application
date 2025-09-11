@@ -19,6 +19,24 @@ spec:
   {{- if $app.serviceAccount }}
   serviceAccountName: {{ $app.serviceAccount }}
   {{- end }}
+  {{- if $app.secrets }}
+  secrets:
+    {{- range $app.secrets }}
+    - name: {{ .name | quote }}
+      {{- if .secretName }}
+      secretName: {{ .secretName | quote }}
+      {{- end }}
+      {{- if .mountPath }}
+      mountPath: {{ .mountPath | quote }}
+      {{- end }}
+      {{- if .subPath }}
+      subPath: {{ .subPath | quote }}
+      {{- end }}
+      {{- if .readOnly }}
+      readOnly: {{ .readOnly }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
   {{- if $app.ingress }}
   ingress:
     {{- range $app.ingress }}
