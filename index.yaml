@@ -1538,6 +1538,20 @@ entries:
       charts.openshift.io/name: workflows-operator
       charts.openshift.io/supportedVersions: '>=1.29.0'
     apiVersion: v2
+    created: "2025-09-11T21:15:57.733600774Z"
+    description: A Helm chart for Fitwel workflows operator applications
+    digest: c18beccabdccfed6b6e9343b0cd5e6c329a75d5e75e5db3e8f926ca1647a241b
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    kubeVersion: '>=1.29.0-0'
+    name: workflows-operator
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/workflows-operator-0.1.4/workflows-operator-0.1.4.tgz
+    version: 0.1.4
+  - annotations:
+      charts.openshift.io/name: workflows-operator
+      charts.openshift.io/supportedVersions: '>=1.29.0'
+    apiVersion: v2
     created: "2025-09-08T16:55:37.388947146Z"
     description: A Helm chart for Fitwel workflows operator applications
     digest: 66ba180f80e4b19b7334a51d566c21aa5c23005416effc04675d75c9861a7eb3
@@ -1590,4 +1604,4 @@ entries:
     urls:
     - https://c4ad.github.io/chart-application/workflows-operator-0.1.0.tgz
     version: 0.1.0
-generated: "2025-09-08T16:55:37.38102609Z"
+generated: "2025-09-11T21:15:57.733869049Z"
