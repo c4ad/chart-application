@@ -1,63 +1,95 @@
 {{- $releaseName := .Release.Name }}
+{{- $fullName := include "api-service.fullname" . }}
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Values.app.name | quote }}
+  name: {{ $fullName }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ .Values.app.name | quote }}
+    {{- include "api-service.labels" . | nindent 4 }}
 spec:
-  revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 0 }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit | default 3 }}
   strategy:
-    type: RollingUpdate
+    type: {{ .Values.strategy.type | default "RollingUpdate" }}
+    {{- if eq (.Values.strategy.type | default "RollingUpdate") "RollingUpdate" }}
     rollingUpdate:
-      maxSurge: {{ .Values.strategy.rollingUpdate.maxSurge }}
-      maxUnavailable: {{ .Values.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.strategy.rollingUpdate.maxSurge | default 1 }}
+      maxUnavailable: {{ .Values.strategy.rollingUpdate.maxUnavailable | default 0 }}
+    {{- end }}
   selector:
     matchLabels:
-      app: {{ .Values.app.name | quote }}
+      {{- include "api-service.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: {{ .Values.app.name | quote }}
+        {{- include "api-service.labels" . | nindent 8 }}
       annotations:
-      {{- with .Values.podAnnotations }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- if .Values.secrets }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
+        {{- end }}
+        {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- end }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ .Values.serviceAccount.name | default .Values.app.name }}
+      serviceAccountName: {{ include "api-service.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       shareProcessNamespace: true
-      terminationGracePeriodSeconds: 5
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds | default 30 }}
       volumes:
+        {{- if .Values.signedCookies }}
         - name: {{ $releaseName }}-cloudfront
           secret:
-            secretName: {{ $releaseName }}-cloudfront
+            secretName: {{ printf "%s-cloudfront" $releaseName }}
+        {{- end }}
+        {{- with .Values.volumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       containers:
-        - name: {{ .Release.Name | quote }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        - name: {{ .Values.app.name | default .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default "latest" }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
           {{- if or .Values.environments .Values.secrets .Values.signedCookies }}
           volumeMounts:
-          - mountPath: /var/run/secrets/
+          {{- if .Values.signedCookies }}
+          - mountPath: {{ .Values.volumeMounts.secretsPath | default "/var/run/secrets" }}/
             name: {{ $releaseName }}-cloudfront
+            readOnly: true
+          {{- end }}
           env:
           - name: NODE_HOST
             valueFrom:
               fieldRef:
                 fieldPath: spec.nodeName
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
           {{- include "api-service.env" . | nindent 10 }}
           {{- end }}
           ports:
-          - containerPort: {{ .Values.service.targetPort | default 8080 }}
+          - name: http
+            containerPort: {{ .Values.service.targetPort | default 8080 }}
+            protocol: TCP
           {{- include "api-service.probes" . | nindent 10 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if .Values.lifecycle }}
+          lifecycle:
+            {{- toYaml .Values.lifecycle | nindent 12 }}
+          {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

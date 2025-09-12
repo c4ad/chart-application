@@ -6,82 +6,170 @@ app:
   name: api-service
 
 image:
-  repository: {} # aws ecr registry
+  repository: "" # ECR registry URL
   pullPolicy: IfNotPresent
-  tag: ""
+  tag: "latest"
 
 nameOverride: ""
 fullnameOverride: ""
 
+# Revision history limit for deployments
+revisionHistoryLimit: 3
+
+# Deployment configuration
 deployment:
   startupProbe:
     tcpSocket: 8080
+    failureThreshold: 30
+    periodSeconds: 10
   livenessProbe:
     tcpSocket: 8080
-    initialDelaySeconds: 40
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
   readinessProbe:
     tcpSocket: 8080
-    initialDelaySeconds: 40
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
 
+# Deployment strategy
 strategy:
+  type: RollingUpdate
   rollingUpdate:
     maxSurge: 1
     maxUnavailable: 0
 
+# Service configuration
 service:
   type: ClusterIP
   port: 80
   targetPort: 8080
+  annotations: {}
 
+# Ingress configuration
 ingress:
   enabled: false
-  className: ""
+  className: "nginx"
   annotations: {}
   hosts: []
   tls: []
 
+# Service Account
 serviceAccount:
   create: true
-  name: api-service
-  annotations:
-    eks.amazonaws.com/role-arn: {}
+  name: ""
+  annotations: {}
+  imagePullSecrets: []
+  automountServiceAccountToken: false
 
+# Pod annotations
 podAnnotations: {}
 
-podSecurityContext: {}
+# Pod Security Context (Kubernetes 1.30+ compatible)
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 65534
+  runAsGroup: 65534
+  fsGroup: 65534
+  seccompProfile:
+    type: RuntimeDefault
 
+# Container Security Context
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 65534
+  runAsGroup: 65534
+  capabilities:
+    drop:
+      - ALL
+    add:
+      - NET_BIND_SERVICE
+  seccompProfile:
+    type: RuntimeDefault
+
+# Resource limits and requests
 resources:
   limits:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 1000m
+    memory: 1Gi
   requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 200m
+    memory: 512Mi
 
+# Horizontal Pod Autoscaling
 autoscaling:
   enabled: true
-  maxReplicas: 2
+  minReplicas: 1
+  maxReplicas: 10
   cpu:
     targetAverageUtilization: 70
   memory:
-    targetAverageUtilization: 70
+    targetAverageUtilization: 80
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 60
+      selectPolicy: Max
+      policies:
+        - type: Pods
+          value: 2
+          periodSeconds: 60
+    scaleDown:
+      stabilizationWindowSeconds: 300
+      selectPolicy: Min
+      policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 180
 
-behavior: {}
-
+# Node selection
 nodeSelector: {}
 
+# Tolerations for node taints
 tolerations: []
 
+# Pod affinity/anti-affinity
 affinity: {}
 
-environments:
+# Environment variables (stored in ConfigMap)
+environments: {}
   # Example:
   # MONGODB_DATABASE_NAME: platform-live
+  # SERVICE_NAME: api-service
 
-secret:
-  # Example:
-  # SECRET_KEY: my-secret-key
+# External secrets configuration (for ESO integration)
+secretName: ""
 
-signedCookies:
+# Secret keys that will be populated by External Secrets Operator
+secrets: {}
   # Example:
-  # PRIVATE_KEY: my-private-key
+  # MONGODB_CONNECTION_URL: ""
+  # PLATFORM_PW_RESET_SECRET: ""
+
+# File-based secrets (like certificates, keys)
+signedCookies: {}
+  # Example:
+  # private_key.pem: ""
+
+# Volume mounts for secrets
+volumeMounts:
+  secretsPath: /var/run/secrets
+
+# Additional volumes
+volumes: []
+
+# Image pull secrets
+imagePullSecrets: []
+
+# Termination grace period
+terminationGracePeriodSeconds: 30
+
+# Pod lifecycle hooks
+lifecycle: {}
+  # preStop:
+  #   exec:
+  #     command: ["/bin/sh", "-c", "sleep 15"]

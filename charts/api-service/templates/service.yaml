@@ -4,12 +4,17 @@ metadata:
   name: {{ include "api-service.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ .Values.app.name | quote }}
+    {{- include "api-service.labels" . | nindent 4 }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
+  type: {{ .Values.service.type | default "ClusterIP" }}
   ports:
-    - name: http-fitwel
+    - name: http
       port: {{ .Values.service.port | default 80 }}
       targetPort: {{ .Values.service.targetPort | default 8080 }}
       protocol: TCP
   selector:
-    app: {{ .Values.app.name | quote }}
+    {{- include "api-service.selectorLabels" . | nindent 4 }}
