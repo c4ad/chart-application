@@ -13,6 +13,16 @@ entries:
     version: 0.1.0
   api-service:
   - apiVersion: v2
+    created: "2025-09-12T18:09:56.020469061Z"
+    description: A Helm chart for Kubernetes api-services
+    digest: 597c00d333f4620a68be4ab34a4e95815a942fac0edfac022fc8fa52a9f32c43
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    name: api-service
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/api-service-0.8.2/api-service-0.8.2.tgz
+    version: 0.8.2
+  - apiVersion: v2
     created: "2025-09-11T21:29:04.848681524Z"
     description: A Helm chart for Kubernetes api-services
     digest: 2a534af4c0fe3ea2cf5338236bc0ddc36d66b7a193227d5afcb188636fae1f4d
@@ -1538,6 +1548,20 @@ entries:
       charts.openshift.io/name: workflows-operator
       charts.openshift.io/supportedVersions: '>=1.29.0'
     apiVersion: v2
+    created: "2025-09-12T18:09:56.485912904Z"
+    description: A Helm chart for Fitwel workflows operator applications
+    digest: 2bc94bfdd5774121d4fc6677ed255a074857e5032700d8112fde8fd64a802dd0
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    kubeVersion: '>=1.29.0-0'
+    name: workflows-operator
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/workflows-operator-0.1.6/workflows-operator-0.1.6.tgz
+    version: 0.1.6
+  - annotations:
+      charts.openshift.io/name: workflows-operator
+      charts.openshift.io/supportedVersions: '>=1.29.0'
+    apiVersion: v2
     created: "2025-09-11T21:29:04.856126512Z"
     description: A Helm chart for Fitwel workflows operator applications
     digest: f589f276b724d605c96349f4d3b6c5cd439076145f4b698a85a2684d26e9b06d
@@ -1618,4 +1642,4 @@ entries:
     urls:
     - https://c4ad.github.io/chart-application/workflows-operator-0.1.0.tgz
     version: 0.1.0
-generated: "2025-09-11T21:29:04.847004819Z"
+generated: "2025-09-12T18:09:56.486256667Z"
