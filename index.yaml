@@ -13,6 +13,18 @@ entries:
     version: 0.1.0
   api-service:
   - apiVersion: v2
+    appVersion: 1.30.0
+    created: "2025-09-12T18:25:22.381233994Z"
+    description: A Helm chart for Kubernetes api-services
+    digest: 58913741d8d0301a59a24553e4f456f798d8c89fe9314d0be398aa88a79a3cb3
+    icon: https://images.squarespace-cdn.com/content/v1/6294f761bc48c512bfad618b/0eb45243-5c6c-4a63-b1f0-38efc7493465/Fitwel+Logo+Website+Black.png?format=1500w
+    kubeVersion: '>=1.28.0-0'
+    name: api-service
+    type: application
+    urls:
+    - https://github.com/c4ad/chart-application/releases/download/api-service-0.9.0/api-service-0.9.0.tgz
+    version: 0.9.0
+  - apiVersion: v2
     created: "2025-09-12T18:10:10.780252628Z"
     description: A Helm chart for Kubernetes api-services
     digest: bdde67eb6449a6a33fef40605e17c7050a9113d713f3e08444d1fd29b67b59a9
@@ -1642,4 +1654,4 @@ entries:
     urls:
     - https://c4ad.github.io/chart-application/workflows-operator-0.1.0.tgz
     version: 0.1.0
-generated: "2025-09-12T18:10:10.779485312Z"
+generated: "2025-09-12T18:25:22.881208585Z"
