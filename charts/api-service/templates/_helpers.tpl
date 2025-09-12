@@ -78,7 +78,7 @@ Environment variables template
 - name: {{ $key }}
   valueFrom:
     secretKeyRef:
-      name: {{ $.Release.Name }}-secret  {{- /* Corrected .Release.Name reference */}}
+      name: {{ $.Values.secretName | default (printf "%s-secret" $.Release.Name) }}
       key: {{ $key }}
 {{- end }}
 {{- range $key, $value := .Values.signedCookies }}
